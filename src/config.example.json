@@ -3,6 +3,7 @@
     "spotifySecret": "fillMe (https://developer.spotify.com/dashboard/applications)",
     "downloadTo": "./downloads",
     "playlists": [
+        "spotify",
         "playlist",
         "ids",
         "go",
