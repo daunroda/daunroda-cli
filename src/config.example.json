@@ -2,6 +2,8 @@
     "spotifyClientID": "fillMe (https://developer.spotify.com/dashboard/applications)",
     "spotifySecret": "fillMe (https://developer.spotify.com/dashboard/applications)",
     "downloadTo": "./downloads",
+    "audioContainer": "mp3 | flac",
+    "audioBitrate": "0-320 (only applies to mp3)",
     "playlists": [
         "spotify",
         "playlist",

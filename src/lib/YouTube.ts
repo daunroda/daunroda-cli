@@ -8,10 +8,22 @@ import { Readable } from "stream";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
 import ytdl from "ytdl-core";
-import { downloadTo } from "../config.json";
+import { audioBitrate, audioContainer, downloadTo } from "../config.json";
 import { Processed } from "./Spotify";
 
 ffmpeg.setFfmpegPath(ffmpegPath!);
+
+const codec =
+  audioContainer === "mp3"
+    ? "libmp3lame"
+    : audioContainer === "flac"
+    ? "flac"
+    : "libmp3lame";
+
+const bitrate =
+  !isNaN(parseFloat(audioBitrate)) && Number(audioBitrate) <= 320
+    ? `${Number(audioBitrate)}k`
+    : "320k";
 
 export class YouTube {
   private client!: Innertube;
@@ -41,7 +53,7 @@ export class YouTube {
 
         const destination = `${downloadTo}/${sanitize(
           playlist.name
-        )}/${sanitize(name)}.mp3`;
+        )}/${sanitize(name)}.${audioContainer}`;
 
         // Skip searching and downloading if song is already downloaded
         if (existsSync(destination)) {
@@ -91,7 +103,10 @@ export class YouTube {
       this.stopwatch.stop();
 
       const m3u8 = songs
-        .map((name) => `${sanitize(playlist.name)}/${sanitize(name)}.mp3`)
+        .map(
+          (name) =>
+            `${sanitize(playlist.name)}/${sanitize(name)}.${audioContainer}`
+        )
         .join("\n");
       await writeFile(`${downloadTo}/${sanitize(playlist.name)}.m3u8`, m3u8);
 
@@ -125,7 +140,7 @@ export class YouTube {
   ) {
     const audioStream = ytdl(`https://youtu.be/${id}`, {
       quality: "highestaudio",
-      highWaterMark: 1 << 25,
+      highWaterMark: 1 << 25
     });
 
     audioStream.on("error", (err) =>
@@ -139,7 +154,9 @@ export class YouTube {
     );
 
     const tmpImg = `${tmpdir()}/${(Math.random() + 1).toString(36)}.jpg`;
-    const tmpAudio = `${tmpdir()}/${(Math.random() + 1).toString(36)}.mp3`;
+    const tmpAudio = `${tmpdir()}/${(Math.random() + 1).toString(
+      36
+    )}.${audioContainer}`;
 
     await this.saveTmpAudio(audioStream, tmpAudio);
     await writeFile(tmpImg, Buffer.from(coverStream));
@@ -150,13 +167,17 @@ export class YouTube {
           .input(tmpImg)
           .outputOptions(
             "-acodec",
-            "libmp3lame",
+            codec,
+            "-b:a",
+            bitrate,
             "-map",
             "0:0",
             "-map",
             "1:0",
             "-id3v2_version",
             "3",
+            "-disposition:v",
+            "attached_pic",
             "-metadata:s:v",
             'title="Album cover"',
             "-metadata:s:v",
@@ -189,7 +210,9 @@ export class YouTube {
 
   private saveTmpAudio(audioStream: Readable, destination: string) {
     return new Promise((resolve) => {
-      const ff = ffmpeg(audioStream).saveToFile(destination);
+      const ff = ffmpeg(audioStream)
+        .outputOptions("-acodec", codec, "-b:a", bitrate)
+        .saveToFile(destination);
       ff.on("end", resolve);
     });
   }
