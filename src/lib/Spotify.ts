@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import spotify from "spotify-web-api-node";
 import { spotifyClientID, spotifySecret } from "../config.json";
 
@@ -20,13 +21,17 @@ export class Spotify {
     const processed: Processed[] = [];
 
     for (const id of ids) {
-      const playlist = await this.client.getPlaylist(id);
+      const playlist = await this.client.getPlaylist(id).catch((err) => {
+        console.error(chalk.red(`Playlist with the ID of ${id} not found.`));
+      });
+      if (!playlist) continue;
       const { name } = playlist.body;
       const { description } = playlist.body;
       const image = playlist.body.images[0].url;
+      const url = playlist.body.external_urls.spotify;
 
       const songs = await this.getSpotifyTracks(id);
-      processed.push({ id, name, description, image, songs });
+      processed.push({ id, name, description, image, songs, url });
     }
 
     return processed;
@@ -61,4 +66,5 @@ export interface Processed {
   description: string | null;
   image: string;
   songs: PlaylistObject[];
+  url: string;
 }

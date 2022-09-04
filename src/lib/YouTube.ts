@@ -1,4 +1,5 @@
 import { Stopwatch } from "@sapphire/stopwatch";
+import chalk from "chalk";
 import cliProgress from "cli-progress";
 import ffmpegPath from "ffmpeg-static";
 import ffmpeg from "fluent-ffmpeg";
@@ -16,6 +17,8 @@ import {
   downloadTo,
 } from "../config.json";
 import { Processed } from "./Spotify";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const hyperlinker = require("hyperlinker");
 
 ffmpeg.setFfmpegPath(ffmpegPath!);
 
@@ -52,7 +55,13 @@ export class YouTube {
 
       const progress = new cliProgress.SingleBar(
         {
-          format: `Downloading ${playlist.name} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}`,
+          format: `Downloading ${chalk.blackBright(
+            hyperlinker(playlist.name, playlist.url)
+          )} [{bar}] ${chalk.greenBright(
+            "{percentage}%"
+          )} | ETA: ${chalk.yellowBright("{eta}s")} | ${chalk.blueBright(
+            "{value}/{total}"
+          )}`,
         },
         cliProgress.Presets.legacy
       );
@@ -95,7 +104,9 @@ export class YouTube {
 
         const diff = this.difference(duration, result.duration?.seconds ?? 0);
         console.debug(
-          `Difference between Spotify and YouTube Music version: ${diff}%`
+          `Difference between Spotify and YouTube Music version: ${chalk.cyanBright(
+            diff
+          )}%`
         );
 
         if (
@@ -139,22 +150,28 @@ export class YouTube {
       const songsNotFound = notFound.find((el) => el.playlist === playlist.id);
       console.info(
         songsNotFound
-          ? `Found ${
+          ? `Found ${chalk.cyanBright(
               playlist.songs.length - songsNotFound.songs.length
-            } songs out of ${playlist.songs.length} from the "${
-              playlist.name
-            }" playlist and downloaded ${
+            )} songs out of ${chalk.cyanBright(
+              playlist.songs.length
+            )} from the "${chalk.blackBright(
+              hyperlinker(playlist.name, playlist.url)
+            )}" playlist!\nDownloaded ${
               bigDifference.length > 1
-                ? `${playlist.songs.length - bigDifference.length}`
+                ? `${chalk.cyanBright(
+                    playlist.songs.length - bigDifference.length
+                  )}`
                 : "all"
             } in ${this.stopwatch.toString()}!`
-          : `Found all songs (${playlist.songs.length}) from the "${
-              playlist.name
-            }" playlist and downloaded ${
-              bigDifference.length > 1
-                ? `all but ${bigDifference.length} (due to there being a big difference in length)`
-                : "all"
-            } in ${this.stopwatch.toString()} ⏱️!`
+          : `Found all songs (${chalk.cyanBright(
+              playlist.songs.length
+            )}) from the "${chalk.blackBright(
+              hyperlinker(playlist.name, playlist.url)
+            )}" playlist!\nDownloaded ${`${
+              playlist.songs.length - bigDifference.length
+            }/${playlist.songs.length}`}${
+              bigDifference.length > 1 ? ` (big difference in song length)` : ""
+            } songs in ${chalk.cyan(this.stopwatch.toString())}!\n`
       );
     }
   }
