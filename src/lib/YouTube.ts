@@ -167,9 +167,11 @@ export class YouTube {
               playlist.songs.length
             )}) from the "${chalk.blackBright(
               hyperlinker(playlist.name, playlist.url)
-            )}" playlist!\nDownloaded ${`${
-              playlist.songs.length - bigDifference.length
-            }/${playlist.songs.length}`}${
+            )}" playlist!\nDownloaded ${chalk.inverse(
+              `${playlist.songs.length - bigDifference.length}/${
+                playlist.songs.length
+              }`
+            )}${
               bigDifference.length > 1 ? ` (big difference in song length)` : ""
             } songs in ${chalk.cyan(this.stopwatch.toString())}!\n`
       );
