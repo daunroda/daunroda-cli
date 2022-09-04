@@ -1,0 +1,52 @@
+{
+  "name": "daunroda",
+  "version": "1.0.0-alpha",
+  "description": "A simple yet efficient Spotify to YouTube Music Downloader",
+  "main": "dist/index.js",
+  "eslintConfig": {
+    "extends": "@sapphire"
+  },
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "dev": "tsc && node dist/index.js --v",
+    "lint": "eslint src --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexthemaster/daunroda.git"
+  },
+  "keywords": [
+    "spotify",
+    "youtube-music",
+    "spotify-downloader",
+    "youtube-music-downloader"
+  ],
+  "author": "Kovacs Alex (alexdemaster@proton.me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alexthemaster/daunroda/issues"
+  },
+  "homepage": "https://github.com/alexthemaster/daunroda#readme",
+  "dependencies": {
+    "@sapphire/stopwatch": "^1.4.1",
+    "ffmpeg-static": "^5.1.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-extra": "^10.1.0",
+    "prettier": "^2.7.1",
+    "sanitize-filename": "^1.6.3",
+    "spotify-web-api-node": "^5.0.2",
+    "undici": "^5.10.0",
+    "youtubei.js": "github:LuanRT/YouTube.js",
+    "ytdl-core": "^4.11.2"
+  },
+  "devDependencies": {
+    "@sapphire/eslint-config": "^4.3.8",
+    "@tsconfig/node16": "^1.0.3",
+    "@types/fluent-ffmpeg": "^2.1.20",
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^18.7.14",
+    "@types/spotify-web-api-node": "^5.0.7",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1"
+  }
+}

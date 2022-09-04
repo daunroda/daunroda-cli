@@ -1,0 +1,11 @@
+{
+    "spotifyClientID": "fillMe (https://developer.spotify.com/dashboard/applications)",
+    "spotifySecret": "fillMe (https://developer.spotify.com/dashboard/applications)",
+    "downloadTo": "./downloads",
+    "playlists": [
+        "playlist",
+        "ids",
+        "go",
+        "here"
+    ]
+}
