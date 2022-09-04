@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { ensureDir } from "fs-extra";
-import { downloadTo, playlists } from "./config.json";
+import { audioContainer, downloadTo, playlists } from "./config.json";
 import { Spotify } from "./lib/Spotify";
 import { YouTube } from "./lib/YouTube";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -8,6 +8,9 @@ const hyperlinker = require("hyperlinker");
 
 const args = process.argv.slice(2);
 if (!args.find((el) => el === "--v")) console.debug = () => null;
+
+if (audioContainer !== "mp3" && audioContainer !== "flac")
+  throw new Error('Only "mp3" and "flac" are valid audio containers.');
 
 async function main() {
   const spotify = await new Spotify().init();
