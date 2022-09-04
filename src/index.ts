@@ -25,7 +25,7 @@ async function main() {
     `Fetched ${fetchedTracks} tracks across ${totalPlaylists} on Spotify!`
   );
 
-  console.info("Looking for songs on YouTube Music...");
+  console.info("Searching and downloading songs from YouTube Music...");
   await yt.processSongs(processed);
   console.log(processed[0].songs[0].youtube);
 }

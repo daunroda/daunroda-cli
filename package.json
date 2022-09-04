@@ -29,6 +29,7 @@
   "homepage": "https://github.com/alexthemaster/daunroda#readme",
   "dependencies": {
     "@sapphire/stopwatch": "^1.4.1",
+    "cli-progress": "^3.11.2",
     "ffmpeg-static": "^5.1.0",
     "fluent-ffmpeg": "^2.1.2",
     "fs-extra": "^10.1.0",
@@ -42,6 +43,7 @@
   "devDependencies": {
     "@sapphire/eslint-config": "^4.3.8",
     "@tsconfig/node16": "^1.0.3",
+    "@types/cli-progress": "^3.11.0",
     "@types/fluent-ffmpeg": "^2.1.20",
     "@types/fs-extra": "^9.0.13",
     "@types/node": "^18.7.14",

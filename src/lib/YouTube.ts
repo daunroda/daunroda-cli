@@ -1,4 +1,5 @@
 import { Stopwatch } from "@sapphire/stopwatch";
+import cliProgress from "cli-progress";
 import ffmpegPath from "ffmpeg-static";
 import ffmpeg from "fluent-ffmpeg";
 import { ensureDir, existsSync, rm, writeFile } from "fs-extra";
@@ -49,6 +50,15 @@ export class YouTube {
       const bigDifference: string[] = [];
       const songs: string[] = [];
 
+      const progress = new cliProgress.SingleBar(
+        {
+          format: `Downloading ${playlist.name} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}`,
+        },
+        cliProgress.Presets.legacy
+      );
+
+      progress.start(playlist.songs.length, 0);
+
       this.stopwatch.restart();
       for (const song of playlist.songs) {
         if (!song.track) continue;
@@ -64,6 +74,7 @@ export class YouTube {
         if (existsSync(destination)) {
           songs.push(name);
           console.debug(`"${name}" is already downloaded.`);
+          progress.increment();
           continue;
         }
 
@@ -95,6 +106,7 @@ export class YouTube {
             `The difference in duration for ${name} is too big (${diff}%), skipping song...`
           );
           bigDifference.push(name);
+          progress.increment();
 
           continue;
         }
@@ -102,12 +114,18 @@ export class YouTube {
         songs.push(name);
 
         // We push all the promises into an array to be able to concurrently download songs
-        const promise = this.downloadSong(result.id!, destination, track);
+        const promise = this.downloadSong(
+          result.id!,
+          destination,
+          track,
+          progress
+        );
         promises.push(promise);
       }
 
       await Promise.all(promises);
 
+      progress.stop();
       this.stopwatch.stop();
 
       const m3u8 = songs
@@ -134,9 +152,9 @@ export class YouTube {
               playlist.name
             }" playlist and downloaded ${
               bigDifference.length > 1
-                ? `all but ${bigDifference.length} due to there being a big difference in length`
+                ? `all but ${bigDifference.length} (due to there being a big difference in length)`
                 : "all"
-            } in ${this.stopwatch.toString()}!`
+            } in ${this.stopwatch.toString()} ⏱️!`
       );
     }
   }
@@ -144,7 +162,8 @@ export class YouTube {
   public async downloadSong(
     id: string,
     destination: string,
-    track: SpotifyApi.TrackObjectFull
+    track: SpotifyApi.TrackObjectFull,
+    progress: cliProgress.SingleBar
   ) {
     const audioStream = ytdl(`https://youtu.be/${id}`, {
       quality: "highestaudio",
@@ -208,6 +227,7 @@ export class YouTube {
         ff.on("end", async () => {
           await rm(tmpImg);
           await rm(tmpAudio);
+          progress.increment();
           resolve();
         });
       } catch (err) {
