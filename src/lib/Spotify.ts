@@ -4,12 +4,12 @@ import { spotifyClientID, spotifySecret } from "../config.json";
 export class Spotify {
   private client = new spotify({
     clientId: spotifyClientID,
-    clientSecret: spotifySecret
+    clientSecret: spotifySecret,
   });
 
   public async init() {
     const {
-      body: { access_token }
+      body: { access_token },
     } = await this.client.clientCredentialsGrant();
     this.client.setAccessToken(access_token);
 
@@ -39,7 +39,7 @@ export class Spotify {
 
     while (next) {
       const {
-        body: { items, next: nextURL }
+        body: { items, next: nextURL },
       } = await this.client.getPlaylistTracks(id, { offset });
       if (!nextURL) next = false;
       else if (nextURL)

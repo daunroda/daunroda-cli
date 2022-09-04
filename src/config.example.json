@@ -4,6 +4,7 @@
     "downloadTo": "./downloads",
     "audioContainer": "mp3 | flac",
     "audioBitrate": "0-320 (only applies to mp3)",
+    "difference": "(any number, really, used to check what the difference between the Spotify version and YouTube Music version is in length, and if it's higher than the percentage specified here it will be skipped)",
     "playlists": [
         "spotify",
         "playlist",

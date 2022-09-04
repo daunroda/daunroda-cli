@@ -8,7 +8,12 @@ import { Readable } from "stream";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
 import ytdl from "ytdl-core";
-import { audioBitrate, audioContainer, downloadTo } from "../config.json";
+import {
+  audioBitrate,
+  audioContainer,
+  difference,
+  downloadTo,
+} from "../config.json";
 import { Processed } from "./Spotify";
 
 ffmpeg.setFfmpegPath(ffmpegPath!);
@@ -82,7 +87,10 @@ export class YouTube {
           `Difference between Spotify and YouTube Music version: ${diff}%`
         );
 
-        if (Math.round(Number(diff)) > 10) {
+        if (
+          Math.round(Number(diff)) >
+          (isNaN(parseFloat(difference)) ? 10 : Number(difference))
+        ) {
           console.debug(
             `The difference in duration for ${name} is too big (${diff}%), skipping song...`
           );
@@ -140,7 +148,7 @@ export class YouTube {
   ) {
     const audioStream = ytdl(`https://youtu.be/${id}`, {
       quality: "highestaudio",
-      highWaterMark: 1 << 25
+      highWaterMark: 1 << 25,
     });
 
     audioStream.on("error", (err) =>
