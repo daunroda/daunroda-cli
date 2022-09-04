@@ -12,7 +12,7 @@ The Spotify to YouTube Music downloader that doesn't download all kinds of bulls
 
 ## Usage
 
-- Install [Nodejs](https://nodejs.org/en/download/) (version 18.0.0 or newer)
+- Install [Nodejs](https://nodejs.org/en/download/) (LTS or newer)
 - Clone this repository
 - Run `npm ci`
 - Copy the contents of `config.example.json` from the `src` folder into a new file called `config.json` (also in the `src` folder) and fill the information needed in.
