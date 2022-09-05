@@ -3,6 +3,9 @@
   "version": "1.0.0-beta",
   "description": "A simple yet efficient Spotify to YouTube Music Downloader",
   "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "prettier": {
     "trailingComma": "es5"
   },
