@@ -1,5 +1,9 @@
 # Daunroda
 
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 The Spotify to YouTube Music downloader that doesn't download all kinds of
 bullshit from YouTube (karaoke/instrumental versions, music video versions etc)
 
@@ -79,6 +83,11 @@ daunroda.on("error", console.error);
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/alexthemaster"><img src="https://avatars.githubusercontent.com/u/31011461?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alex Kovacs</b></sub></a><br /><a href="https://github.com/@alexthemaster/Daunroda/commits?author=alexthemaster" title="Code">💻</a></td>
+  </tr>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
