@@ -4,22 +4,20 @@ The Spotify to YouTube Music downloader that doesn't download all kinds of bulls
 
 ⚠️ This is a very very alpha release of this so expect things to break!
 
+
 ## Features
 
 - Spotify metadata embedded in files
 - Playlist file creation (.m3u8)
 - Concurrent music downloading from YouTube
 
-## Usage
+## Usage (⚠️ NPM Version is currently broken due to a dependency error)
 
 1. As a CLI app:
 
-- Install [Nodejs](https://nodejs.org/en/download/) (LTS or newer)
-- Open the termina
-- Run `npm i --global daunroda`
-- Run `daunroda` and follow the terminal's instructions
+- Download the [latest release](https://github.com/alexthemaster/daunroda/releases) executable and run it. 
 
-2. As package (currently not on NPM):
+2. As package (currently broken):
 
 - `npm i daunroda`
 - In JavaScript:
