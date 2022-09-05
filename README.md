@@ -89,7 +89,7 @@ daunroda.on("error", console.error);
     <td align="center"><a href="https://favware.tech/"><img src="https://avatars.githubusercontent.com/u/4019718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jeroen Claassens</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/commits?author=favna" title="Code">💻</a></td>
     <td align="center"><a href="http://mrcube.live"><img src="https://avatars.githubusercontent.com/u/25201357?v=4?s=100" width="100px;" alt=""/><br /><sub><b>MrCube</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/commits?author=ItsMrCube" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/apps/allcontributors"><img src="https://avatars.githubusercontent.com/in/23186?v=4?s=100" width="100px;" alt=""/><br /><sub><b>allcontributors[bot]</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/commits?author=allcontributors[bot]" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/igerman"><img src="https://avatars.githubusercontent.com/u/4061990?v=4?s=100" width="100px;" alt=""/><br /><sub><b>igerman</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/issues?q=author%3Aigerman" title="Bug reports">🐛</a> <a href="#ideas-igerman" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://igerman.cc/"><img src="https://avatars.githubusercontent.com/u/36676880?v=4?s=100" width="100px;" alt=""/><br /><sub><b>iGerman</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/issues?q=author%3AiGerman00" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
