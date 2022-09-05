@@ -1,7 +1,7 @@
 # Daunroda
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 The Spotify to YouTube Music downloader that doesn't download all kinds of
@@ -89,6 +89,7 @@ daunroda.on("error", console.error);
     <td align="center"><a href="https://favware.tech/"><img src="https://avatars.githubusercontent.com/u/4019718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jeroen Claassens</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/commits?author=favna" title="Code">💻</a></td>
     <td align="center"><a href="http://mrcube.live"><img src="https://avatars.githubusercontent.com/u/25201357?v=4?s=100" width="100px;" alt=""/><br /><sub><b>MrCube</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/commits?author=ItsMrCube" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/apps/allcontributors"><img src="https://avatars.githubusercontent.com/in/23186?v=4?s=100" width="100px;" alt=""/><br /><sub><b>allcontributors[bot]</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/commits?author=allcontributors[bot]" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/igerman"><img src="https://avatars.githubusercontent.com/u/4061990?v=4?s=100" width="100px;" alt=""/><br /><sub><b>igerman</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/issues?q=author%3Aigerman" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

@@ -45,6 +45,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "igerman",
+      "name": "igerman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4061990?v=4",
+      "profile": "https://github.com/igerman",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
