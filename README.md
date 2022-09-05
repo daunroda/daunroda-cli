@@ -1,9 +1,9 @@
 # Daunroda
 
-The Spotify to YouTube Music downloader that doesn't download all kinds of bullshit from YouTube (karaoke/instrumental versions, music video versions etc)
+The Spotify to YouTube Music downloader that doesn't download all kinds of
+bullshit from YouTube (karaoke/instrumental versions, music video versions etc)
 
 ⚠️ This is a very very alpha release of this so expect things to break!
-
 
 ## Features
 
@@ -15,7 +15,9 @@ The Spotify to YouTube Music downloader that doesn't download all kinds of bulls
 
 1. As a CLI app:
 
-- Download the [latest release](https://github.com/alexthemaster/daunroda/releases) executable and run it. 
+- Download the
+  [latest release](https://github.com/alexthemaster/daunroda/releases)
+  executable and run it.
 
 2. As package (currently broken):
 
@@ -70,5 +72,4 @@ daunroda.run().catch(console.error);
 
 daunroda.on("info", console.info);
 daunroda.on("error", console.error);
-
 ```

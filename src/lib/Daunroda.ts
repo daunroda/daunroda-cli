@@ -1,8 +1,9 @@
-import chalk from "chalk";
-import { ensureDir } from "fs-extra";
-import { EventEmitter } from "stream";
+import { blueBright, cyanBright, greenBright, yellowBright } from "colorette";
+import { EventEmitter } from "node:stream";
+import { ensureDir } from "./fs-utils";
 import { Spotify } from "./Spotify";
 import { YouTube } from "./YouTube";
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const hyperlinker = require("hyperlinker");
 
@@ -30,7 +31,7 @@ export class Daunroda extends EventEmitter {
 
     this.emit(
       "info",
-      `Processing ${chalk.greenBright(totalPlaylists)} on Spotify...`
+      `Processing ${greenBright(totalPlaylists)} on Spotify...`
     );
     const processed = await spotify.processPlaylists(this.config.playlists);
 
@@ -38,9 +39,9 @@ export class Daunroda extends EventEmitter {
     processed.map((val) => (fetchedTracks += val.songs.length));
     this.emit(
       "info",
-      `Fetched ${chalk.cyanBright(
-        `${fetchedTracks} tracks`
-      )} across ${chalk.greenBright(totalPlaylists)} on Spotify!`
+      `Fetched ${cyanBright(`${fetchedTracks} tracks`)} across ${greenBright(
+        totalPlaylists
+      )} on Spotify!`
     );
 
     this.emit(
@@ -51,12 +52,12 @@ export class Daunroda extends EventEmitter {
 
     this.emit(
       "info",
-      `${chalk.yellowBright(
+      `${yellowBright(
         hyperlinker(
           "Success!",
           "https://www.myinstants.com/media/instants_images/boratgs.jpg"
         )
-      )} Songs downloaded to ${chalk.blueBright(this.config.downloadTo)}.`
+      )} Songs downloaded to ${blueBright(this.config.downloadTo)}.`
     );
   }
 }

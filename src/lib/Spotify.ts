@@ -1,6 +1,6 @@
-import chalk from "chalk";
+import { red } from "colorette";
 import spotify from "spotify-web-api-node";
-import { Daunroda } from "./Daunroda";
+import type { Daunroda } from "./Daunroda";
 
 export class Spotify {
   private client: spotify;
@@ -11,13 +11,13 @@ export class Spotify {
 
     this.client = new spotify({
       clientId: daunroda.config.spotifyClientID,
-      clientSecret: daunroda.config.spotifySecret,
+      clientSecret: daunroda.config.spotifySecret
     });
   }
 
   public async init() {
     const {
-      body: { access_token },
+      body: { access_token }
     } = await this.client.clientCredentialsGrant();
     this.client.setAccessToken(access_token);
 
@@ -28,10 +28,10 @@ export class Spotify {
     const processed: Processed[] = [];
 
     for (const id of ids) {
-      const playlist = await this.client.getPlaylist(id).catch((err) => {
+      const playlist = await this.client.getPlaylist(id).catch(() => {
         this.daunroda.emit(
           "error",
-          chalk.red(`Playlist with the ID of ${id} not found.`)
+          red(`Playlist with the ID of ${id} not found.`)
         );
       });
 
@@ -55,7 +55,7 @@ export class Spotify {
 
     while (next) {
       const {
-        body: { items, next: nextURL },
+        body: { items, next: nextURL }
       } = await this.client.getPlaylistTracks(id, { offset });
       if (!nextURL) next = false;
       else if (nextURL)
