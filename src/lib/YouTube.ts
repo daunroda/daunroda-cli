@@ -8,15 +8,20 @@ import {
   ensureDir,
   ensureFile,
   existsSync,
+  readFile,
   rm,
   writeFile,
 } from "fs-extra";
+import inquirer from "inquirer";
 import { tmpdir } from "os";
 import sanitize from "sanitize-filename";
 import { ReadableStream } from "stream/web";
+import { compareTwoStrings } from "string-similarity";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
+import MusicResponsiveListItem from "youtubei.js/dist/src/parser/classes/MusicResponsiveListItem";
 import {
+  allowForbiddenWording,
   audioBitrate,
   audioContainer,
   difference,
@@ -27,6 +32,13 @@ import { Processed } from "./Spotify";
 const hyperlinker = require("hyperlinker");
 
 ffmpeg.setFfmpegPath(ffmpegPath!);
+
+const reject = [
+  "(live)",
+  "music video",
+  "karaoke version",
+  "instrumental version",
+];
 
 const codec =
   audioContainer === "mp3"
@@ -43,6 +55,14 @@ const bitrate =
 export class YouTube {
   private client!: Innertube;
   private stopwatch = new Stopwatch().stop();
+  private downloadMaybe: {
+    res: MusicResponsiveListItem;
+    name: string;
+    destination: string;
+    track: SpotifyApi.TrackObjectFull;
+    playlist: string;
+    reason: string;
+  }[] = [];
 
   public async init() {
     this.client = await Innertube.create({});
@@ -55,8 +75,7 @@ export class YouTube {
       await ensureDir(`${downloadTo}/${sanitize(playlist.name)}`);
       const promises = [];
 
-      const notFound: { playlist: string; songs: string[] }[] = [];
-      const bigDifference: string[] = [];
+      const notFound: Set<string> = new Set();
       const songs: string[] = [];
 
       const progress = new cliProgress.SingleBar(
@@ -79,7 +98,6 @@ export class YouTube {
         if (!song.track) continue;
         const { track } = song;
         const name = `${track.artists[0].name} - ${track.name}`;
-        const duration = track.duration_ms / 1000;
 
         const destination = `${downloadTo}/${sanitize(
           playlist.name
@@ -96,37 +114,14 @@ export class YouTube {
         console.debug(`Searching for "${name}"...`);
         const searched = await this.client.music.search(name, { type: "song" });
 
-        const result = searched?.results?.[0];
-        if (!result) {
-          console.debug(`Not found "${name}"`);
+        const result =
+          searched?.results?.length &&
+          // Find the first result that doesn't get filtered out
+          (await searched?.results?.find((res) =>
+            this.filter(res, name, destination, track, playlist.name, notFound)
+          ));
 
-          const array = notFound.find((el) => el.playlist === playlist.id);
-
-          if (!array) notFound.push({ playlist: playlist.id, songs: [name] });
-          else if (array) array.songs.push(name);
-
-          continue;
-        }
-
-        const diff = this.difference(duration, result.duration?.seconds ?? 0);
-        console.debug(
-          `Difference between Spotify and YouTube Music version: ${chalk.cyanBright(
-            diff
-          )}%`
-        );
-
-        if (
-          Math.round(Number(diff)) >
-          (isNaN(parseFloat(difference)) ? 10 : Number(difference))
-        ) {
-          console.debug(
-            `The difference in duration for ${name} is too big (${diff}%), skipping song...`
-          );
-          bigDifference.push(name);
-          progress.increment();
-
-          continue;
-        }
+        if (!result) continue;
 
         songs.push(name);
 
@@ -153,37 +148,78 @@ export class YouTube {
         .join("\n");
       await writeFile(`${downloadTo}/${sanitize(playlist.name)}.m3u8`, m3u8);
 
-      const songsNotFound = notFound.find((el) => el.playlist === playlist.id);
+      const songsNotFound = notFound.size;
       console.info(
         songsNotFound
-          ? `Found ${chalk.cyanBright(
-              playlist.songs.length - songsNotFound.songs.length
-            )} songs out of ${chalk.cyanBright(
+          ? `Found and downloaded ${chalk.cyanBright(
+              playlist.songs.length - songsNotFound
+            )}/${chalk.cyanBright(
               playlist.songs.length
-            )} from the "${chalk.blackBright(
+            )} songs from the "${chalk.blackBright(
               hyperlinker(playlist.name, playlist.url)
-            )}" playlist!\nDownloaded ${
-              bigDifference.length > 1
-                ? `${chalk.cyanBright(
-                    playlist.songs.length - bigDifference.length
-                  )}`
-                : "all"
-            } in ${this.stopwatch.toString()}!`
-          : `Found all songs (${chalk.cyanBright(
+            )}" playlist in ${chalk.cyan(this.stopwatch.toString())}!\n`
+          : `Found and downloaded all songs (${chalk.cyanBright(
               playlist.songs.length
             )}) from the "${chalk.blackBright(
               hyperlinker(playlist.name, playlist.url)
-            )}" playlist!\nDownloaded ${chalk.inverse(
-              `${playlist.songs.length - bigDifference.length}/${
-                playlist.songs.length
-              }`
-            )}${
-              bigDifference.length > 1 ? ` (big difference in song length)` : ""
-            } songs in ${chalk.cyan(this.stopwatch.toString())}!\n`
+            )}" playlist in ${chalk.cyan(this.stopwatch.toString())}!\n`
       );
+    }
+
+    for (const download of this.downloadMaybe) {
+      const { answer }: { answer: boolean } = await inquirer.prompt({
+        type: "confirm",
+        name: "answer",
+        message: `\nFound ${chalk.cyanBright(
+          download.name
+        )} on YouTube (named ${chalk.cyanBright(
+          download.res.name ?? download.res.title
+        )}) but it was rejected because of ${
+          download.reason
+        }. Do you want to download ${hyperlinker(
+          chalk.yellowBright("this"),
+          `https://music.youtube.com/watch?v=${download.res.id}`
+        )} anyway?`,
+      });
+
+      if (answer) {
+        const progress = new cliProgress.SingleBar(
+          {
+            format: `Downloading ${chalk.blackBright(
+              download.name
+            )} [{bar}] ${chalk.greenBright(
+              "{percentage}%"
+            )} | ETA: ${chalk.yellowBright("{eta}s")} | ${chalk.blueBright(
+              "{value}/{total}"
+            )}`,
+          },
+          cliProgress.Presets.legacy
+        );
+        progress.start(1, 0);
+        await this.downloadSong(
+          download.res.id!,
+          download.destination,
+          download.track,
+          progress
+        );
+
+        // Add newly downloaded song to playlist file
+        let m3u8 = await readFile(
+          `${downloadTo}/${sanitize(download.playlist)}.m3u8`
+        ).then((buff) => buff.toString());
+        m3u8 += `\n${sanitize(download.playlist)}/${sanitize(
+          download.name
+        )}.${audioContainer}`;
+        await writeFile(
+          `${downloadTo}/${sanitize(download.playlist)}.m3u8`,
+          m3u8
+        );
+        progress.stop();
+      }
     }
   }
 
+  /** Downloads a song from YouTube and adds the metadata from Spotify to it */
   public async downloadSong(
     id: string,
     destination: string,
@@ -255,6 +291,7 @@ export class YouTube {
     });
   }
 
+  /** Saves the audio stream from YouTube to a temporary file */
   private async saveTmpAudio(
     audioStream: ReadableStream<Uint8Array>,
     destination: string
@@ -279,6 +316,78 @@ export class YouTube {
     } finally {
       reader.releaseLock();
     }
+  }
+
+  /** Filter out unwanted results */
+  private filter(
+    res: MusicResponsiveListItem,
+    name: string,
+    destination: string,
+    track: SpotifyApi.TrackObjectFull,
+    playlist: string,
+    notFound: Set<string>
+  ) {
+    if (!notFound.has(name)) notFound.add(name);
+
+    // If none of the artist names intersect or the titles aren't similar enough then reject this entry
+    if (
+      !res.artists?.some(
+        (artist) =>
+          artist.name.toLowerCase() === track.artists[0].name.toLowerCase()
+      ) ||
+      compareTwoStrings(res.title ?? res.name ?? "", track.name) < 0.6
+    ) {
+      console.debug(`Not found "${name}"`);
+      return false;
+    }
+
+    const diff = this.difference(
+      track.duration_ms / 1000,
+      res.duration?.seconds ?? 0
+    );
+
+    if (
+      !allowForbiddenWording &&
+      (reject.some(
+        (rej) => res.title && res.title.toLowerCase().includes(rej)
+      ) ||
+        reject.some((rej) => res.name && res.name.toLowerCase().includes(rej)))
+    ) {
+      this.downloadMaybe.push({
+        res,
+        name,
+        destination,
+        track,
+        playlist,
+        reason: "the name on YouTube contains forbidden wording",
+      });
+
+      return false;
+    }
+
+    if (
+      Math.round(Number(diff)) >
+      (isNaN(parseFloat(difference)) ? 10 : Number(difference))
+    ) {
+      console.debug(
+        `The difference in duration for ${name} is too big (${diff}%)`
+      );
+
+      this.downloadMaybe.push({
+        res,
+        name,
+        destination,
+        track,
+        playlist,
+        reason: "a big difference in duration",
+      });
+
+      return false;
+    }
+
+    // Remove the song from the not found set, since it was found by another entry
+    if (notFound.has(name)) notFound.delete(name);
+    return true;
   }
 
   private difference(a: number, b: number) {
