@@ -15,10 +15,9 @@ The Spotify to YouTube Music downloader that doesn't download all kinds of bulls
 1. As a CLI app:
 
 - Install [Nodejs](https://nodejs.org/en/download/) (LTS or newer)
-- Clone this repository
-- Run `npm ci`
-- Copy the contents of `config.example.json` from the `src` folder into a new file called `config.json` (also in the `src` folder) and fill the information needed in.
-- Run `npm start` or `npm run dev` for verbose messages
+- Open the termina
+- Run `npm i --global daunroda`
+- Run `daunroda` and follow the terminal's instructions
 
 2. As package (currently not on NPM):
 

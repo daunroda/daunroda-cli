@@ -3,23 +3,16 @@ import chalk from "chalk";
 import cliProgress from "cli-progress";
 import ffmpegPath from "ffmpeg-static";
 import ffmpeg from "fluent-ffmpeg";
-import {
-  createWriteStream,
-  ensureDir,
-  ensureFile,
-  existsSync,
-  readFile,
-  rm,
-  writeFile,
-} from "fs-extra";
+import { ensureDir, existsSync, readFile, rm, writeFile } from "fs-extra";
 import inquirer from "inquirer";
 import { tmpdir } from "os";
 import sanitize from "sanitize-filename";
-import { ReadableStream } from "stream/web";
+import { Readable } from "stream";
 import { compareTwoStrings } from "string-similarity";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
 import MusicResponsiveListItem from "youtubei.js/dist/src/parser/classes/MusicResponsiveListItem";
+import ytdl from "ytdl-core";
 import { Daunroda } from "./Daunroda";
 import { Processed } from "./Spotify";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -38,6 +31,8 @@ export class YouTube {
   private client!: Innertube;
   private daunroda: Daunroda;
   private stopwatch = new Stopwatch().stop();
+  private codec: string;
+  private bitrate: string;
   private downloadMaybe: {
     res: MusicResponsiveListItem;
     name: string;
@@ -49,6 +44,19 @@ export class YouTube {
 
   public constructor(daunroda: Daunroda) {
     this.daunroda = daunroda;
+
+    this.codec =
+      this.daunroda.config.audioContainer === "mp3"
+        ? "libmp3lame"
+        : this.daunroda.config.audioContainer === "flac"
+        ? "flac"
+        : "libmp3lame";
+
+    this.bitrate =
+      !isNaN(this.daunroda.config.audioBitrate) &&
+      this.daunroda.config.audioBitrate <= 320
+        ? `${this.daunroda.config.audioBitrate}k`
+        : "320k";
   }
 
   public async init() {
@@ -225,10 +233,16 @@ export class YouTube {
     track: SpotifyApi.TrackObjectFull,
     progress: cliProgress.SingleBar
   ) {
-    const audioStream = await this.client.download(id, {
-      quality: "best",
-      type: "audio",
+    const audioStream = ytdl(`https://youtu.be/${id}`, {
+      quality: "highestaudio",
+      highWaterMark: 1 << 25,
     });
+
+    audioStream.on("error", (err: { message: string }) =>
+      console.error(
+        `There was an error whilst downloading "${track.name}": ${err.message}`
+      )
+    );
 
     const coverStream = await request(track.album.images[0].url).then((res) =>
       res.body.arrayBuffer()
@@ -242,28 +256,15 @@ export class YouTube {
     await this.saveTmpAudio(audioStream, tmpAudio);
     await writeFile(tmpImg, Buffer.from(coverStream));
 
-    const codec =
-      this.daunroda.config.audioContainer === "mp3"
-        ? "libmp3lame"
-        : this.daunroda.config.audioContainer === "flac"
-        ? "flac"
-        : "libmp3lame";
-
-    const bitrate =
-      !isNaN(this.daunroda.config.audioBitrate) &&
-      this.daunroda.config.audioBitrate <= 320
-        ? `${this.daunroda.config.audioBitrate}k`
-        : "320k";
-
     return new Promise<void>((resolve, reject) => {
       try {
         const ff = ffmpeg(tmpAudio)
           .input(tmpImg)
           .outputOptions(
             "-acodec",
-            codec,
+            this.codec,
             "-b:a",
-            bitrate,
+            this.bitrate,
             "-map",
             "0:0",
             "-map",
@@ -304,30 +305,13 @@ export class YouTube {
   }
 
   /** Saves the audio stream from YouTube to a temporary file */
-  private async saveTmpAudio(
-    audioStream: ReadableStream<Uint8Array>,
-    destination: string
-  ) {
-    await ensureFile(destination);
-
-    // I was having a very weird, very hard to reproduce bug with Undici, but the youtubei.js package developer came in clutch with this solution. Many thanks https://github.com/LuanRT!
-    const reader = audioStream.getReader();
-    const file = createWriteStream(destination);
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        file.write(value);
-      }
-
-      return true;
-    } catch (err) {
-      return new Error(
-        `Something went wrong whilst downloading a song: ${err}`
-      );
-    } finally {
-      reader.releaseLock();
-    }
+  private saveTmpAudio(audioStream: Readable, destination: string) {
+    return new Promise((resolve) => {
+      const ff = ffmpeg(audioStream)
+        .outputOptions("-acodec", this.codec, "-b:a", this.bitrate)
+        .saveToFile(destination);
+      ff.on("end", resolve);
+    });
   }
 
   /** Filter out unwanted results */

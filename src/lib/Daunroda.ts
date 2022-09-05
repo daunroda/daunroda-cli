@@ -70,9 +70,9 @@ export interface Config {
   downloadTo: string;
   /** The audio container (extension) of the files (mp3 or flac) */
   audioContainer: string;
-  /** The audio bitrate of the files (anywhere from 0 to 320) */
+  /** The audio bitrate of mp3 files (anywhere from 0 to 320) */
   audioBitrate: number;
-  /** The percentage used to check against for the difference between the Spotify version and YouTube Music version in duration, and if it's higher than the percentage specified it will be skipped */
+  /** The percentage number used to check against the difference between the Spotify version and YouTube Music version in duration (if higher than this it will be skipped from auto-downloading) */
   difference: number;
   /** Whether to automatically allow the downloading of songs that contain forbidden wording on YouTube (such as live, karaoke, instrumental etc), if disabled you will be prompted if you want to download anyway or not) */
   allowForbiddenWording: boolean;

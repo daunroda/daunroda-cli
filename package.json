@@ -1,10 +1,16 @@
 {
   "name": "daunroda",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-beta",
   "description": "A simple yet efficient Spotify to YouTube Music Downloader",
   "main": "dist/index.js",
+  "prettier": {
+    "trailingComma": "es5"
+  },
   "eslintConfig": {
     "extends": "@sapphire"
+  },
+  "bin": {
+    "daunroda": "dist/bin/index.js"
   },
   "scripts": {
     "start": "tsc && node dist/CLI.js",
@@ -36,12 +42,14 @@
     "fs-extra": "^10.1.0",
     "hyperlinker": "^1.0.0",
     "inquirer": "8.2.4",
+    "inquirer-select-directory": "^1.2.0",
     "prettier": "^2.7.1",
     "sanitize-filename": "^1.6.3",
     "spotify-web-api-node": "^5.0.2",
     "string-similarity": "^4.0.4",
     "undici": "^5.10.0",
-    "youtubei.js": "github:LuanRT/YouTube.js"
+    "youtubei.js": "github:LuanRT/YouTube.js",
+    "ytdl-core": "^4.11.2"
   },
   "devDependencies": {
     "@sapphire/eslint-config": "^4.3.8",
