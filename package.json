@@ -39,8 +39,7 @@
     "sanitize-filename": "^1.6.3",
     "spotify-web-api-node": "^5.0.2",
     "undici": "^5.10.0",
-    "youtubei.js": "github:LuanRT/YouTube.js",
-    "ytdl-core": "^4.11.2"
+    "youtubei.js": "github:LuanRT/YouTube.js"
   },
   "devDependencies": {
     "@sapphire/eslint-config": "^4.3.8",

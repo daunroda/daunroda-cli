@@ -3,13 +3,19 @@ import chalk from "chalk";
 import cliProgress from "cli-progress";
 import ffmpegPath from "ffmpeg-static";
 import ffmpeg from "fluent-ffmpeg";
-import { ensureDir, existsSync, rm, writeFile } from "fs-extra";
+import {
+  createWriteStream,
+  ensureDir,
+  ensureFile,
+  existsSync,
+  rm,
+  writeFile,
+} from "fs-extra";
 import { tmpdir } from "os";
 import sanitize from "sanitize-filename";
-import { Readable } from "stream";
+import { ReadableStream } from "stream/web";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
-import ytdl from "ytdl-core";
 import {
   audioBitrate,
   audioContainer,
@@ -184,16 +190,10 @@ export class YouTube {
     track: SpotifyApi.TrackObjectFull,
     progress: cliProgress.SingleBar
   ) {
-    const audioStream = ytdl(`https://youtu.be/${id}`, {
-      quality: "highestaudio",
-      highWaterMark: 1 << 25,
+    const audioStream = await this.client.download(id, {
+      quality: "best",
+      type: "audio",
     });
-
-    audioStream.on("error", (err) =>
-      console.error(
-        `There was an error whilst downloading "${track.name}": ${err.message}`
-      )
-    );
 
     const coverStream = await request(track.album.images[0].url).then((res) =>
       res.body.arrayBuffer()
@@ -255,13 +255,30 @@ export class YouTube {
     });
   }
 
-  private saveTmpAudio(audioStream: Readable, destination: string) {
-    return new Promise((resolve) => {
-      const ff = ffmpeg(audioStream)
-        .outputOptions("-acodec", codec, "-b:a", bitrate)
-        .saveToFile(destination);
-      ff.on("end", resolve);
-    });
+  private async saveTmpAudio(
+    audioStream: ReadableStream<Uint8Array>,
+    destination: string
+  ) {
+    await ensureFile(destination);
+
+    // I was having a very weird, very hard to reproduce bug with Undici, but the youtubei.js package developer came in clutch with this solution. Many thanks https://github.com/LuanRT!
+    const reader = audioStream.getReader();
+    const file = createWriteStream(destination);
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        file.write(value);
+      }
+
+      return true;
+    } catch (err) {
+      return new Error(
+        `Something went wrong whilst downloading a song: ${err}`
+      );
+    } finally {
+      reader.releaseLock();
+    }
   }
 
   private difference(a: number, b: number) {
