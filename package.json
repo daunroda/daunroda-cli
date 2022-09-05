@@ -14,7 +14,6 @@
     "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "@favware/colorette-spinner": "^1.0.1",
     "@sapphire/stopwatch": "^1.4.1",
     "@skyra/jaro-winkler": "^1.1.0",
     "cli-progress": "^3.11.2",

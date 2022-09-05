@@ -21,7 +21,7 @@ bullshit from YouTube (karaoke/instrumental versions, music video versions etc)
 
 2. As package (currently broken):
 
-- `npm i daunroda`
+- `npm i daunroda` or `yarn add daunroda`
 - In JavaScript:
 
 ```js
@@ -73,3 +73,14 @@ daunroda.run().catch(console.error);
 daunroda.on("info", console.info);
 daunroda.on("error", console.error);
 ```
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->

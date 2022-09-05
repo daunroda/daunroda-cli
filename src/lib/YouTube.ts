@@ -1,10 +1,6 @@
 import { Stopwatch } from "@sapphire/stopwatch";
-import cliProgress from "cli-progress";
-import ffmpegPath from "ffmpeg-static";
-import ffmpeg from "fluent-ffmpeg";
-import { readFile, writeFile, rm } from "node:fs/promises";
-import inquirer from "inquirer";
 import { jaroWinkler } from "@skyra/jaro-winkler";
+import cliProgress from "cli-progress";
 import {
   blackBright,
   blueBright,
@@ -13,16 +9,20 @@ import {
   greenBright,
   yellowBright
 } from "colorette";
+import ffmpegPath from "ffmpeg-static";
+import ffmpeg from "fluent-ffmpeg";
+import inquirer from "inquirer";
+import { readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import sanitize from "sanitize-filename";
 import type { Readable } from "node:stream";
+import sanitize from "sanitize-filename";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
 import type MusicResponsiveListItem from "youtubei.js/dist/src/parser/classes/MusicResponsiveListItem";
 import ytdl from "ytdl-core";
 import type { Daunroda } from "./Daunroda";
-import type { Processed } from "./Spotify";
 import { ensureDir, exists } from "./fs-utils";
+import type { Processed } from "./Spotify";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const hyperlinker = require("hyperlinker");
