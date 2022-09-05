@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import { readFile, stat, writeFile } from "fs-extra";
 import inquirer from "inquirer";
-import { homedir } from "os";
-import { parse } from "path";
-import { Daunroda } from "..";
-import { Config } from "../lib/Daunroda";
+import { readFile, stat, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
+import { parse } from "node:path";
+import { Daunroda, type Config } from "../lib/Daunroda";
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const inquirerdir = require("inquirer-select-directory");
 
@@ -36,9 +36,9 @@ class DaunrodaCLI {
           "Re-make config",
           "Add playlist",
           "Delete last playlist",
-          "Exit",
-        ],
-      },
+          "Exit"
+        ]
+      }
     ]);
 
     switch (choice) {
@@ -89,21 +89,21 @@ class DaunrodaCLI {
       audioContainer,
       audioBitrate,
       difference,
-      allowForbiddenWording,
+      allowForbiddenWording
     } = await inquirer.prompt([
       {
         name: "spotifyClientID",
-        message: "What is your Spotify client id?",
+        message: "What is your Spotify client id?"
       },
       {
         name: "spotifySecret",
-        message: "What is your Spotify client secret?",
+        message: "What is your Spotify client secret?"
       },
       {
         name: "downloadTo",
         message: "Where should I download songs to?",
         type: "directory",
-        basePath: parse(__dirname).root,
+        basePath: parse(__dirname).root
       },
       {
         name: "audioContainer",
@@ -111,7 +111,7 @@ class DaunrodaCLI {
           "In what audio container do you want to download the songs in?",
         type: "list",
         default: "mp3",
-        choices: ["mp3", "flac"],
+        choices: ["mp3", "flac"]
       },
       {
         name: "audioBitrate",
@@ -121,7 +121,7 @@ class DaunrodaCLI {
         validate: (input) =>
           !isNaN(input) || input > 320
             ? true
-            : "Please input a bitrate between 0 and 320kbps!",
+            : "Please input a bitrate between 0 and 320kbps!"
       },
       {
         name: "difference",
@@ -130,15 +130,15 @@ class DaunrodaCLI {
         default: 10,
 
         validate: (input) =>
-          isNaN(input) ? "Please input a number to use!" : true,
+          isNaN(input) ? "Please input a number to use!" : true
       },
       {
         name: "allowForbiddenWording",
         message:
           "Should I automatically download songs that contain forbidden wording on YouTube (such as live, karaoke, instrumental etc), if disabled you will be prompted if you want to download anyway or not",
         default: false,
-        type: "confirm",
-      },
+        type: "confirm"
+      }
     ]);
 
     this.config = {
@@ -149,7 +149,7 @@ class DaunrodaCLI {
       audioBitrate,
       difference,
       allowForbiddenWording,
-      playlists: [],
+      playlists: []
     };
 
     await this.saveConfig();
@@ -192,8 +192,8 @@ class DaunrodaCLI {
           validate: (input: string) =>
             input && input.toLowerCase().includes("playlist")
               ? true
-              : "Please provide a valid Spotify playlist.",
-        },
+              : "Please provide a valid Spotify playlist."
+        }
       ]);
 
     const id = spotifyPlaylist.split(/playlist[\/:]/)[1].split("?")[0];

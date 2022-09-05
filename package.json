@@ -1,27 +1,60 @@
 {
   "name": "daunroda",
   "version": "1.0.0-beta.9",
+  "license": "MIT",
   "description": "A simple yet efficient Spotify to YouTube Music Downloader",
+  "author": "Kovacs Alex (alexdemaster@proton.me)",
   "main": "dist/index.js",
+  "bin": "dist/bin/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "yarn build && node dist/bin/index.js",
+    "dev": "yarn build && node dist/bin/index.js --v",
+    "lint": "eslint src --fix --ext ts",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@favware/colorette-spinner": "^1.0.1",
+    "@sapphire/stopwatch": "^1.4.1",
+    "@skyra/jaro-winkler": "^1.1.0",
+    "cli-progress": "^3.11.2",
+    "colorette": "^2.0.19",
+    "ffmpeg-static": "^5.1.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "hyperlinker": "^1.0.0",
+    "inquirer": "^8.2.4",
+    "inquirer-select-directory": "^1.2.0",
+    "sanitize-filename": "^1.6.3",
+    "spotify-web-api-node": "^5.0.2",
+    "undici": "^5.10.0",
+    "youtubei.js": "github:LuanRT/YouTube.js",
+    "ytdl-core": "^4.11.2"
+  },
+  "devDependencies": {
+    "@sapphire/eslint-config": "^4.3.8",
+    "@sapphire/prettier-config": "^1.4.4",
+    "@sapphire/ts-config": "^3.3.4",
+    "@types/cli-progress": "^3.11.0",
+    "@types/fluent-ffmpeg": "^2.1.20",
+    "@types/inquirer": "^9.0.1",
+    "@types/node": "^18.7.15",
+    "@types/spotify-web-api-node": "^5.0.7",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.2"
+  },
+  "resolutions": {
+    "@types/spotify-api": "^0.0.17"
+  },
   "files": [
     "dist/**/*.js",
     "dist/**/*.d.ts",
     "dist/**/*.d.ts.map"
   ],
-  "prettier": {
-    "trailingComma": "es5"
-  },
-  "eslintConfig": {
-    "extends": "@sapphire"
-  },
-  "bin": {
-    "daunroda": "dist/bin/index.js"
-  },
-  "scripts": {
-    "start": "npx tsc && node dist/bin/index.js",
-    "dev": "npx tsc && node dist/bin/index.js --v",
-    "lint": "npx eslint src --fix"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alexthemaster/daunroda.git"
@@ -32,41 +65,12 @@
     "spotify-downloader",
     "youtube-music-downloader"
   ],
-  "author": "Kovacs Alex (alexdemaster@proton.me)",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/alexthemaster/daunroda/issues"
   },
   "homepage": "https://github.com/alexthemaster/daunroda#readme",
-  "dependencies": {
-    "@sapphire/stopwatch": "^1.4.1",
-    "chalk": "4.1.2",
-    "cli-progress": "^3.11.2",
-    "ffmpeg-static": "^5.1.0",
-    "fluent-ffmpeg": "^2.1.2",
-    "fs-extra": "^10.1.0",
-    "hyperlinker": "^1.0.0",
-    "inquirer": "8.2.4",
-    "inquirer-select-directory": "^1.2.0",
-    "prettier": "^2.7.1",
-    "sanitize-filename": "^1.6.3",
-    "spotify-web-api-node": "^5.0.2",
-    "string-similarity": "^4.0.4",
-    "undici": "^5.10.0",
-    "youtubei.js": "github:LuanRT/YouTube.js",
-    "ytdl-core": "^4.11.2"
+  "eslintConfig": {
+    "extends": "@sapphire"
   },
-  "devDependencies": {
-    "@sapphire/eslint-config": "^4.3.8",
-    "@tsconfig/node16": "^1.0.3",
-    "@types/cli-progress": "^3.11.0",
-    "@types/fluent-ffmpeg": "^2.1.20",
-    "@types/fs-extra": "^9.0.13",
-    "@types/inquirer": "^9.0.1",
-    "@types/node": "^18.7.14",
-    "@types/spotify-web-api-node": "^5.0.7",
-    "@types/string-similarity": "^4.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.36.1",
-    "@typescript-eslint/parser": "^5.36.1"
-  }
+  "packageManager": "yarn@3.2.3"
 }

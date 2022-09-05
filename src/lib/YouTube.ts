@@ -1,20 +1,29 @@
 import { Stopwatch } from "@sapphire/stopwatch";
-import chalk from "chalk";
 import cliProgress from "cli-progress";
 import ffmpegPath from "ffmpeg-static";
 import ffmpeg from "fluent-ffmpeg";
-import { ensureDir, existsSync, readFile, rm, writeFile } from "fs-extra";
+import { readFile, writeFile, rm } from "node:fs/promises";
 import inquirer from "inquirer";
-import { tmpdir } from "os";
+import { jaroWinkler } from "@skyra/jaro-winkler";
+import {
+  blackBright,
+  blueBright,
+  cyan,
+  cyanBright,
+  greenBright,
+  yellowBright
+} from "colorette";
+import { tmpdir } from "node:os";
 import sanitize from "sanitize-filename";
-import { Readable } from "stream";
-import { compareTwoStrings } from "string-similarity";
+import type { Readable } from "node:stream";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
-import MusicResponsiveListItem from "youtubei.js/dist/src/parser/classes/MusicResponsiveListItem";
+import type MusicResponsiveListItem from "youtubei.js/dist/src/parser/classes/MusicResponsiveListItem";
 import ytdl from "ytdl-core";
-import { Daunroda } from "./Daunroda";
-import { Processed } from "./Spotify";
+import type { Daunroda } from "./Daunroda";
+import type { Processed } from "./Spotify";
+import { ensureDir, exists } from "./fs-utils";
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const hyperlinker = require("hyperlinker");
 
@@ -24,7 +33,7 @@ const reject = [
   "(live)",
   "music video",
   "karaoke version",
-  "instrumental version",
+  "instrumental version"
 ];
 
 export class YouTube {
@@ -77,13 +86,11 @@ export class YouTube {
 
       const progress = new cliProgress.SingleBar(
         {
-          format: `Downloading ${chalk.blackBright(
+          format: `Downloading ${blackBright(
             hyperlinker(playlist.name, playlist.url)
-          )} [{bar}] ${chalk.greenBright(
-            "{percentage}%"
-          )} | ETA: ${chalk.yellowBright("{eta}s")} | ${chalk.blueBright(
-            "{value}/{total}"
-          )}`,
+          )} [{bar}] ${greenBright("{percentage}%")} | ETA: ${yellowBright(
+            "{eta}s"
+          )} | ${blueBright("{value}/{total}")}`
         },
         cliProgress.Presets.legacy
       );
@@ -101,7 +108,7 @@ export class YouTube {
         )}/${sanitize(name)}.${this.daunroda.config.audioContainer}`;
 
         // Skip searching and downloading if song is already downloaded
-        if (existsSync(destination)) {
+        if (await exists(destination)) {
           songs.push(name);
           this.daunroda.emit("debug", `"${name}" is already downloaded.`);
           progress.increment();
@@ -154,18 +161,18 @@ export class YouTube {
       this.daunroda.emit(
         "info",
         songsNotFound
-          ? `Found and downloaded ${chalk.cyanBright(
+          ? `Found and downloaded ${cyanBright(
               playlist.songs.length - songsNotFound
-            )}/${chalk.cyanBright(
+            )}/${cyanBright(
               playlist.songs.length
-            )} songs from the "${chalk.blackBright(
+            )} songs from the "${blackBright(
               hyperlinker(playlist.name, playlist.url)
-            )}" playlist in ${chalk.cyan(this.stopwatch.toString())}!\n`
-          : `Found and downloaded all songs (${chalk.cyanBright(
+            )}" playlist in ${cyan(this.stopwatch.toString())}!\n`
+          : `Found and downloaded all songs (${cyanBright(
               playlist.songs.length
-            )}) from the "${chalk.blackBright(
+            )}) from the "${blackBright(
               hyperlinker(playlist.name, playlist.url)
-            )}" playlist in ${chalk.cyan(this.stopwatch.toString())}!\n`
+            )}" playlist in ${cyan(this.stopwatch.toString())}!\n`
       );
     }
 
@@ -173,28 +180,26 @@ export class YouTube {
       const { answer }: { answer: boolean } = await inquirer.prompt({
         type: "confirm",
         name: "answer",
-        message: `\nFound ${chalk.cyanBright(
+        message: `\nFound ${cyanBright(
           download.name
-        )} on YouTube (named ${chalk.cyanBright(
-          download.res.name ?? download.res.title
+        )} on YouTube (named ${cyanBright(
+          download.res.name ?? download.res.title ?? ""
         )}) but it was rejected because of ${
           download.reason
         }. Do you want to download ${hyperlinker(
-          chalk.yellowBright("this"),
+          yellowBright("this"),
           `https://music.youtube.com/watch?v=${download.res.id}`
-        )} anyway?`,
+        )} anyway?`
       });
 
       if (answer) {
         const progress = new cliProgress.SingleBar(
           {
-            format: `Downloading ${chalk.blackBright(
+            format: `Downloading ${blackBright(
               download.name
-            )} [{bar}] ${chalk.greenBright(
-              "{percentage}%"
-            )} | ETA: ${chalk.yellowBright("{eta}s")} | ${chalk.blueBright(
-              "{value}/{total}"
-            )}`,
+            )} [{bar}] ${greenBright("{percentage}%")} | ETA: ${yellowBright(
+              "{eta}s"
+            )} | ${blueBright("{value}/{total}")}`
           },
           cliProgress.Presets.legacy
         );
@@ -235,7 +240,7 @@ export class YouTube {
   ) {
     const audioStream = ytdl(`https://youtu.be/${id}`, {
       quality: "highestaudio",
-      highWaterMark: 1 << 25,
+      highWaterMark: 1 << 25
     });
 
     audioStream.on("error", (err: { message: string }) =>
@@ -331,7 +336,7 @@ export class YouTube {
         (artist) =>
           artist.name.toLowerCase() === track.artists[0].name.toLowerCase()
       ) ||
-      compareTwoStrings(res.title ?? res.name ?? "", track.name) < 0.6
+      jaroWinkler(res.title ?? res.name ?? "", track.name) < 0.6
     ) {
       this.daunroda.emit("debug", `Not found "${name}"`);
       return false;
@@ -355,7 +360,7 @@ export class YouTube {
         destination,
         track,
         playlist,
-        reason: "the name on YouTube contains forbidden wording",
+        reason: "the name on YouTube contains forbidden wording"
       });
 
       return false;
@@ -378,7 +383,7 @@ export class YouTube {
         destination,
         track,
         playlist,
-        reason: "a big difference in duration",
+        reason: "a big difference in duration"
       });
 
       return false;
