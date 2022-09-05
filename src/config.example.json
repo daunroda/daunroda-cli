@@ -3,8 +3,8 @@
     "spotifySecret": "fillMe (https://developer.spotify.com/dashboard/applications)",
     "downloadTo": "./downloads",
     "audioContainer": "mp3 | flac",
-    "audioBitrate": "0-320 (only applies to mp3)",
-    "difference": "(any number, really, used to check what the difference between the Spotify version and YouTube Music version is in length, and if it's higher than the percentage specified here it will be skipped)",
+    "audioBitrate": 0-320 (only applies to mp3),
+    "difference": (any number, really, used to check what the difference between the Spotify version and YouTube Music version is in length, and if it's higher than the percentage specified here it will be skipped),
     "allowForbiddenWording": true | false (whether to automatically allow the downloading of songs that contain forbidden wording on YouTube (such as live, karaoke, instrumental etc), if disabled you will be prompted if you want to download anyway or not), 
     "playlists": [
         "spotify",

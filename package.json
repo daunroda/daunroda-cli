@@ -7,8 +7,8 @@
     "extends": "@sapphire"
   },
   "scripts": {
-    "start": "tsc && node dist/index.js",
-    "dev": "tsc && node dist/index.js --v",
+    "start": "tsc && node dist/CLI.js",
+    "dev": "tsc && node dist/CLI.js --v",
     "lint": "eslint src --fix"
   },
   "repository": {

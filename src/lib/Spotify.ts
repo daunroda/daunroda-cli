@@ -1,12 +1,19 @@
 import chalk from "chalk";
 import spotify from "spotify-web-api-node";
-import { spotifyClientID, spotifySecret } from "../config.json";
+import { Daunroda } from "./Daunroda";
 
 export class Spotify {
-  private client = new spotify({
-    clientId: spotifyClientID,
-    clientSecret: spotifySecret,
-  });
+  private client: spotify;
+  private daunroda: Daunroda;
+
+  public constructor(daunroda: Daunroda) {
+    this.daunroda = daunroda;
+
+    this.client = new spotify({
+      clientId: daunroda.config.spotifyClientID,
+      clientSecret: daunroda.config.spotifySecret,
+    });
+  }
 
   public async init() {
     const {
@@ -22,8 +29,12 @@ export class Spotify {
 
     for (const id of ids) {
       const playlist = await this.client.getPlaylist(id).catch((err) => {
-        console.error(chalk.red(`Playlist with the ID of ${id} not found.`));
+        this.daunroda.emit(
+          "error",
+          chalk.red(`Playlist with the ID of ${id} not found.`)
+        );
       });
+
       if (!playlist) continue;
       const { name } = playlist.body;
       const { description } = playlist.body;

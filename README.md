@@ -12,8 +12,66 @@ The Spotify to YouTube Music downloader that doesn't download all kinds of bulls
 
 ## Usage
 
+1. As a CLI app:
+
 - Install [Nodejs](https://nodejs.org/en/download/) (LTS or newer)
 - Clone this repository
 - Run `npm ci`
 - Copy the contents of `config.example.json` from the `src` folder into a new file called `config.json` (also in the `src` folder) and fill the information needed in.
 - Run `npm start` or `npm run dev` for verbose messages
+
+2. As package (currently not on NPM):
+
+- `npm i daunroda`
+- In JavaScript:
+
+```js
+const { Daunroda } = require(daunroda);
+const daunroda = new Daunroda({
+  spotifyClientID:
+    "fillMe (https://developer.spotify.com/dashboard/applications)",
+  spotifySecret:
+    "fillMe (https://developer.spotify.com/dashboard/applications)",
+  downloadTo: "./downloads",
+  audioContainer: "mp3 | flac",
+  // only applies to mp3
+  audioBitrate: 320,
+  // any number, really, used to check what the difference between the Spotify version and YouTube Music version is in length, and if it's higher than the percentage specified here it will be skipped
+  difference: 10,
+  // whether to automatically allow the downloading of songs that contain forbidden wording on YouTube (such as live, karaoke, instrumental etc), if disabled you will be prompted if you want to download anyway or not
+  allowForbiddenWording: false,
+  playlists: ["spotify", "playlist", "ids", "go", "here"]
+});
+
+daunroda.run().catch(console.error);
+
+daunroda.on("info", console.info);
+daunroda.on("error", console.error);
+```
+
+- In TypeScript:
+
+```ts
+import { Daunroda } from 'daunroda;
+const daunroda = new Daunroda({
+  spotifyClientID:
+    "fillMe (https://developer.spotify.com/dashboard/applications)",
+  spotifySecret:
+    "fillMe (https://developer.spotify.com/dashboard/applications)",
+  downloadTo: "./downloads",
+  audioContainer: "mp3 | flac",
+  // only applies to mp3
+  audioBitrate: 320,
+  // any number, really, used to check what the difference between the Spotify version and YouTube Music version is in length, and if it's higher than the percentage specified here it will be skipped
+  difference: 10,
+  // whether to automatically allow the downloading of songs that contain forbidden wording on YouTube (such as live, karaoke, instrumental etc), if disabled you will be prompted if you want to download anyway or not
+  allowForbiddenWording: false,
+  playlists: ["spotify", "playlist", "ids", "go", "here"]
+});
+
+daunroda.run().catch(console.error);
+
+daunroda.on("info", console.info);
+daunroda.on("error", console.error);
+
+```

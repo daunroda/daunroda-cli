@@ -20,13 +20,7 @@ import { compareTwoStrings } from "string-similarity";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
 import MusicResponsiveListItem from "youtubei.js/dist/src/parser/classes/MusicResponsiveListItem";
-import {
-  allowForbiddenWording,
-  audioBitrate,
-  audioContainer,
-  difference,
-  downloadTo,
-} from "../config.json";
+import { Daunroda } from "./Daunroda";
 import { Processed } from "./Spotify";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const hyperlinker = require("hyperlinker");
@@ -40,20 +34,9 @@ const reject = [
   "instrumental version",
 ];
 
-const codec =
-  audioContainer === "mp3"
-    ? "libmp3lame"
-    : audioContainer === "flac"
-    ? "flac"
-    : "libmp3lame";
-
-const bitrate =
-  !isNaN(parseFloat(audioBitrate)) && Number(audioBitrate) <= 320
-    ? `${Number(audioBitrate)}k`
-    : "320k";
-
 export class YouTube {
   private client!: Innertube;
+  private daunroda: Daunroda;
   private stopwatch = new Stopwatch().stop();
   private downloadMaybe: {
     res: MusicResponsiveListItem;
@@ -64,6 +47,10 @@ export class YouTube {
     reason: string;
   }[] = [];
 
+  public constructor(daunroda: Daunroda) {
+    this.daunroda = daunroda;
+  }
+
   public async init() {
     this.client = await Innertube.create({});
 
@@ -72,7 +59,9 @@ export class YouTube {
 
   public async processSongs(processed: Processed[]) {
     for (const playlist of processed) {
-      await ensureDir(`${downloadTo}/${sanitize(playlist.name)}`);
+      await ensureDir(
+        `${this.daunroda.config.downloadTo}/${sanitize(playlist.name)}`
+      );
       const promises = [];
 
       const notFound: Set<string> = new Set();
@@ -99,19 +88,19 @@ export class YouTube {
         const { track } = song;
         const name = `${track.artists[0].name} - ${track.name}`;
 
-        const destination = `${downloadTo}/${sanitize(
+        const destination = `${this.daunroda.config.downloadTo}/${sanitize(
           playlist.name
-        )}/${sanitize(name)}.${audioContainer}`;
+        )}/${sanitize(name)}.${this.daunroda.config.audioContainer}`;
 
         // Skip searching and downloading if song is already downloaded
         if (existsSync(destination)) {
           songs.push(name);
-          console.debug(`"${name}" is already downloaded.`);
+          this.daunroda.emit("debug", `"${name}" is already downloaded.`);
           progress.increment();
           continue;
         }
 
-        console.debug(`Searching for "${name}"...`);
+        this.daunroda.emit("debug", `Searching for "${name}"...`);
         const searched = await this.client.music.search(name, { type: "song" });
 
         const result =
@@ -143,13 +132,19 @@ export class YouTube {
       const m3u8 = songs
         .map(
           (name) =>
-            `${sanitize(playlist.name)}/${sanitize(name)}.${audioContainer}`
+            `${sanitize(playlist.name)}/${sanitize(name)}.${
+              this.daunroda.config.audioContainer
+            }`
         )
         .join("\n");
-      await writeFile(`${downloadTo}/${sanitize(playlist.name)}.m3u8`, m3u8);
+      await writeFile(
+        `${this.daunroda.config.downloadTo}/${sanitize(playlist.name)}.m3u8`,
+        m3u8
+      );
 
       const songsNotFound = notFound.size;
-      console.info(
+      this.daunroda.emit(
+        "info",
         songsNotFound
           ? `Found and downloaded ${chalk.cyanBright(
               playlist.songs.length - songsNotFound
@@ -205,13 +200,17 @@ export class YouTube {
 
         // Add newly downloaded song to playlist file
         let m3u8 = await readFile(
-          `${downloadTo}/${sanitize(download.playlist)}.m3u8`
+          `${this.daunroda.config.downloadTo}/${sanitize(
+            download.playlist
+          )}.m3u8`
         ).then((buff) => buff.toString());
-        m3u8 += `\n${sanitize(download.playlist)}/${sanitize(
-          download.name
-        )}.${audioContainer}`;
+        m3u8 += `\n${sanitize(download.playlist)}/${sanitize(download.name)}.${
+          this.daunroda.config.audioContainer
+        }`;
         await writeFile(
-          `${downloadTo}/${sanitize(download.playlist)}.m3u8`,
+          `${this.daunroda.config.downloadTo}/${sanitize(
+            download.playlist
+          )}.m3u8`,
           m3u8
         );
         progress.stop();
@@ -236,12 +235,25 @@ export class YouTube {
     );
 
     const tmpImg = `${tmpdir()}/${(Math.random() + 1).toString(36)}.jpg`;
-    const tmpAudio = `${tmpdir()}/${(Math.random() + 1).toString(
-      36
-    )}.${audioContainer}`;
+    const tmpAudio = `${tmpdir()}/${(Math.random() + 1).toString(36)}.${
+      this.daunroda.config.audioContainer
+    }`;
 
     await this.saveTmpAudio(audioStream, tmpAudio);
     await writeFile(tmpImg, Buffer.from(coverStream));
+
+    const codec =
+      this.daunroda.config.audioContainer === "mp3"
+        ? "libmp3lame"
+        : this.daunroda.config.audioContainer === "flac"
+        ? "flac"
+        : "libmp3lame";
+
+    const bitrate =
+      !isNaN(this.daunroda.config.audioBitrate) &&
+      this.daunroda.config.audioBitrate <= 320
+        ? `${this.daunroda.config.audioBitrate}k`
+        : "320k";
 
     return new Promise<void>((resolve, reject) => {
       try {
@@ -286,7 +298,7 @@ export class YouTube {
           resolve();
         });
       } catch (err) {
-        console.error(err);
+        this.daunroda.emit("error", err);
       }
     });
   }
@@ -337,7 +349,7 @@ export class YouTube {
       ) ||
       compareTwoStrings(res.title ?? res.name ?? "", track.name) < 0.6
     ) {
-      console.debug(`Not found "${name}"`);
+      this.daunroda.emit("debug", `Not found "${name}"`);
       return false;
     }
 
@@ -347,7 +359,7 @@ export class YouTube {
     );
 
     if (
-      !allowForbiddenWording &&
+      !this.daunroda.config.allowForbiddenWording &&
       (reject.some(
         (rej) => res.title && res.title.toLowerCase().includes(rej)
       ) ||
@@ -367,9 +379,12 @@ export class YouTube {
 
     if (
       Math.round(Number(diff)) >
-      (isNaN(parseFloat(difference)) ? 10 : Number(difference))
+      (isNaN(this.daunroda.config.difference)
+        ? 10
+        : this.daunroda.config.difference)
     ) {
-      console.debug(
+      this.daunroda.emit(
+        "debug",
         `The difference in duration for ${name} is too big (${diff}%)`
       );
 
