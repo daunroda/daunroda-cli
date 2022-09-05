@@ -1,8 +1,8 @@
 {
-  "projectName": "Daunroda",
+  "projectName": "daunroda",
   "projectOwner": "alexthemaster",
   "repoType": "github",
-  "repoHost": "https://github.com/",
+  "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
@@ -27,7 +27,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ItsMrCube",
+      "name": "MrCube",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25201357?v=4",
+      "profile": "http://mrcube.live",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }
