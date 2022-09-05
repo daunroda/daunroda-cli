@@ -69,7 +69,7 @@ export interface Config {
   /** The folder to download the songs to */
   downloadTo: string;
   /** The audio container (extension) of the files (mp3 or flac) */
-  audioContainer: string;
+  audioContainer: "mp3" | "flac";
   /** The audio bitrate of mp3 files (anywhere from 0 to 320) */
   audioBitrate: number;
   /** The percentage number used to check against the difference between the Spotify version and YouTube Music version in duration (if higher than this it will be skipped from auto-downloading) */
