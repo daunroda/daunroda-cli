@@ -1,7 +1,7 @@
 # Daunroda
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 The Spotify to YouTube Music downloader that doesn't download all kinds of
@@ -85,8 +85,9 @@ daunroda.on("error", console.error);
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/alexthemaster"><img src="https://avatars.githubusercontent.com/u/31011461?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alex Kovacs</b></sub></a><br /><a href="https://github.com//alexthemaster/Daunroda/commits?author=alexthemaster" title="Code">💻</a></td>
-    <td align="center"><a href="https://favware.tech/"><img src="https://avatars.githubusercontent.com/u/4019718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jeroen Claassens</b></sub></a><br /><a href="https://github.com//alexthemaster/Daunroda/commits?author=favna" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/alexthemaster"><img src="https://avatars.githubusercontent.com/u/31011461?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alex Kovacs</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/commits?author=alexthemaster" title="Code">💻</a></td>
+    <td align="center"><a href="https://favware.tech/"><img src="https://avatars.githubusercontent.com/u/4019718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jeroen Claassens</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/commits?author=favna" title="Code">💻</a></td>
+    <td align="center"><a href="http://mrcube.live"><img src="https://avatars.githubusercontent.com/u/25201357?v=4?s=100" width="100px;" alt=""/><br /><sub><b>MrCube</b></sub></a><br /><a href="https://github.com/alexthemaster/daunroda/commits?author=ItsMrCube" title="Code">💻</a></td>
   </tr>
 </table>
 
