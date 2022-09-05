@@ -23,7 +23,7 @@ The Spotify to YouTube Music downloader that doesn't download all kinds of bulls
 - In JavaScript:
 
 ```js
-const { Daunroda } = require(daunroda);
+const { Daunroda } = require("daunroda");
 const daunroda = new Daunroda({
   spotifyClientID:
     "fillMe (https://developer.spotify.com/dashboard/applications)",
@@ -49,7 +49,7 @@ daunroda.on("error", console.error);
 - In TypeScript:
 
 ```ts
-import { Daunroda } from 'daunroda;
+import { Daunroda } from "daunroda";
 const daunroda = new Daunroda({
   spotifyClientID:
     "fillMe (https://developer.spotify.com/dashboard/applications)",
