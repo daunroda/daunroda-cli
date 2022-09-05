@@ -18,9 +18,9 @@
     "daunroda": "dist/bin/index.js"
   },
   "scripts": {
-    "start": "tsc && node dist/CLI.js",
-    "dev": "tsc && node dist/CLI.js --v",
-    "lint": "eslint src --fix"
+    "start": "npx tsc && node dist/bin/index.js",
+    "dev": "npx tsc && node dist/bin/index.js --v",
+    "lint": "npx eslint src --fix"
   },
   "repository": {
     "type": "git",
