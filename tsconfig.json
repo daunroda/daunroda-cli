@@ -2,7 +2,9 @@
   "extends": "@sapphire/ts-config/extra-strict-without-decorators",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "lib": ["ESNext", "DOM"]
   },
   "include": ["src"]
 }
