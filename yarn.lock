@@ -426,15 +426,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-escapes@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "ansi-escapes@npm:5.0.0"
-  dependencies:
-    type-fest: ^1.0.2
-  checksum: d4b5eb8207df38367945f5dd2ef41e08c28edc192dc766ef18af6b53736682f49d8bfcfa4e4d6ecbc2e2f97c258fda084fb29a9e43b69170b71090f771afccac
-  languageName: node
-  linkType: hard
-
 "ansi-regex@npm:^2.0.0":
   version: 2.1.1
   resolution: "ansi-regex@npm:2.1.1"
@@ -870,10 +861,10 @@ __metadata:
     prettier: ^2.7.1
     sanitize-filename: ^1.6.3
     spotify-web-api-node: ^5.0.2
-    terminal-link: ^3.0.0
+    terminal-link: 2.1.1
     typescript: ^4.8.2
     undici: ^5.10.0
-    youtubei.js: "github:LuanRT/YouTube.js"
+    youtubei.js: ^2.0.0
     ytdl-core: ^4.11.2
   bin:
     daunroda: dist/bin/index.js
@@ -2699,7 +2690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-hyperlinks@npm:^2.2.0":
+"supports-hyperlinks@npm:^2.0.0":
   version: 2.3.0
   resolution: "supports-hyperlinks@npm:2.3.0"
   dependencies:
@@ -2709,13 +2700,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terminal-link@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "terminal-link@npm:3.0.0"
+"terminal-link@npm:2.1.1":
+  version: 2.1.1
+  resolution: "terminal-link@npm:2.1.1"
   dependencies:
-    ansi-escapes: ^5.0.0
-    supports-hyperlinks: ^2.2.0
-  checksum: 85a78ae50a2cd3c43df25922e7572f1008c92b1ea98c6c4579bbbe02fa54677a487123c3cae44fecd1a36cac782d0be2cec212a916818abb2b4df6fbb8eed341
+    ansi-escapes: ^4.2.1
+    supports-hyperlinks: ^2.0.0
+  checksum: ce3d2cd3a438c4a9453947aa664581519173ea40e77e2534d08c088ee6dda449eabdbe0a76d2a516b8b73c33262fedd10d5270ccf7576ae316e3db170ce6562f
   languageName: node
   linkType: hard
 
@@ -2821,13 +2812,6 @@ __metadata:
   version: 0.21.3
   resolution: "type-fest@npm:0.21.3"
   checksum: e6b32a3b3877f04339bae01c193b273c62ba7bfc9e325b8703c4ee1b32dc8fe4ef5dfa54bf78265e069f7667d058e360ae0f37be5af9f153b22382cd55a9afe0
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^1.0.2":
-  version: 1.4.0
-  resolution: "type-fest@npm:1.4.0"
-  checksum: b011c3388665b097ae6a109a437a04d6f61d81b7357f74cbcb02246f2f5bd72b888ae33631b99871388122ba0a87f4ff1c94078e7119ff22c70e52c0ff828201
   languageName: node
   linkType: hard
 
@@ -3036,15 +3020,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"youtubei.js@github:LuanRT/YouTube.js":
+"youtubei.js@npm:^2.0.0":
   version: 2.0.0
-  resolution: "youtubei.js@https://github.com/LuanRT/YouTube.js.git#commit=f9da261441767ec2dbd6af305010531b1bb91277"
+  resolution: "youtubei.js@npm:2.0.0"
   dependencies:
     "@protobuf-ts/runtime": ^2.7.0
     jintr: ^0.1.9
     linkedom: ^0.14.12
     undici: ^5.7.0
-  checksum: 6c26d717b5eb21b1c16621ab5b2c07d452af32ec9c6e6050ddae64da73f78c7ae53819e0a52b7c5f521bae914feed88c80993385d3e7ef1e610faaf0aa3de3d8
+  checksum: cab0cd3d1742f41c1e6039f81ad0415d9db86374668176b720fed16b571cc3d94605545ae0b159093a758f004ae7c499f61752e7b9a3717d93f638d414b98118
   languageName: node
   linkType: hard
 

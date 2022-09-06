@@ -1,6 +1,6 @@
 {
   "name": "daunroda",
-  "version": "1.0.0-beta.10",
+  "version": "1.0.0-beta.13",
   "license": "MIT",
   "description": "A simple yet efficient Spotify to YouTube Music Downloader",
   "author": "Kovacs Alex (alexdemaster@proton.me)",
@@ -27,9 +27,9 @@
     "inquirer-select-directory": "^1.2.0",
     "sanitize-filename": "^1.6.3",
     "spotify-web-api-node": "^5.0.2",
-    "terminal-link": "^3.0.0",
+    "terminal-link": "^2.1.1",
     "undici": "^5.10.0",
-    "youtubei.js": "github:LuanRT/YouTube.js",
+    "youtubei.js": "^2.0.0",
     "ytdl-core": "^4.11.2"
   },
   "devDependencies": {

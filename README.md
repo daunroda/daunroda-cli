@@ -1,13 +1,15 @@
 # Daunroda
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 The Spotify to YouTube Music downloader that doesn't download all kinds of
 bullshit from YouTube (karaoke/instrumental versions, music video versions etc)
 
-⚠️ This is a very very alpha release of this so expect things to break!
+⚠️ This package is still in beta so expect things to break!
 
 ## Features
 
@@ -15,15 +17,21 @@ bullshit from YouTube (karaoke/instrumental versions, music video versions etc)
 - Playlist file creation (.m3u8)
 - Concurrent music downloading from YouTube
 
-## Usage (⚠️ NPM Version is currently broken due to a dependency error)
+## Requirements
+
+- [Node.js](https://nodejs.org/en/download/) (18.0.0 or newer)
+- A Spotify application (can be created for free
+  [here](https://developer.spotify.com/dashboard/applications))
+
+## Usage
 
 1. As a CLI app:
 
-- Download the
-  [latest release](https://github.com/alexthemaster/daunroda/releases)
-  executable and run it.
+- Open a terminal
+- Run `npm install --global daunroda`
+- Run `daunroda`
 
-2. As package (currently broken):
+2. As package:
 
 - `npm i daunroda` or `yarn add daunroda`
 - In JavaScript:
@@ -46,10 +54,9 @@ const daunroda = new Daunroda({
   playlists: ["spotify", "playlist", "ids", "go", "here"]
 });
 
-daunroda.run().catch(console.error);
-
 daunroda.on("info", console.info);
 daunroda.on("error", console.error);
+daunroda.run().catch(console.error);
 ```
 
 - In TypeScript:
@@ -72,10 +79,9 @@ const daunroda = new Daunroda({
   playlists: ["spotify", "playlist", "ids", "go", "here"]
 });
 
-daunroda.run().catch(console.error);
-
 daunroda.on("info", console.info);
 daunroda.on("error", console.error);
+daunroda.run().catch(console.error);
 ```
 
 ## Contributors
