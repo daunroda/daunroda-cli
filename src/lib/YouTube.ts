@@ -16,6 +16,7 @@ import { readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import type { Readable } from "node:stream";
 import sanitize from "sanitize-filename";
+import terminalLink from "terminal-link";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
 import type MusicResponsiveListItem from "youtubei.js/dist/src/parser/classes/MusicResponsiveListItem";
@@ -23,9 +24,6 @@ import ytdl from "ytdl-core";
 import type { Daunroda } from "./Daunroda";
 import { ensureDir, exists } from "./fs-utils";
 import type { Processed } from "./Spotify";
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const hyperlinker = require("hyperlinker");
 
 ffmpeg.setFfmpegPath(ffmpegPath!);
 
@@ -87,7 +85,7 @@ export class YouTube {
       const progress = new cliProgress.SingleBar(
         {
           format: `Downloading ${blackBright(
-            hyperlinker(playlist.name, playlist.url)
+            terminalLink(playlist.name, playlist.url)
           )} [{bar}] ${greenBright("{percentage}%")} | ETA: ${yellowBright(
             "{eta}s"
           )} | ${blueBright("{value}/{total}")}`
@@ -166,12 +164,12 @@ export class YouTube {
             )}/${cyanBright(
               playlist.songs.length
             )} songs from the "${blackBright(
-              hyperlinker(playlist.name, playlist.url)
+              terminalLink(playlist.name, playlist.url)
             )}" playlist in ${cyan(this.stopwatch.toString())}!\n`
           : `Found and downloaded all songs (${cyanBright(
               playlist.songs.length
             )}) from the "${blackBright(
-              hyperlinker(playlist.name, playlist.url)
+              terminalLink(playlist.name, playlist.url)
             )}" playlist in ${cyan(this.stopwatch.toString())}!\n`
       );
     }
@@ -186,7 +184,7 @@ export class YouTube {
           download.res.name ?? download.res.title ?? ""
         )}) but it was rejected because of ${
           download.reason
-        }. Do you want to download ${hyperlinker(
+        }. Do you want to download ${terminalLink(
           yellowBright("this"),
           `https://music.youtube.com/watch?v=${download.res.id}`
         )} anyway?`

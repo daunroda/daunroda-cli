@@ -11,7 +11,10 @@
     "start": "yarn build && node dist/bin/index.js",
     "dev": "yarn build && node dist/bin/index.js --v",
     "lint": "eslint src --fix --ext ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "postinstall": "husky install",
+    "prepack": "pinst --disable",
+    "postpack": "pinst --enable"
   },
   "dependencies": {
     "@sapphire/stopwatch": "^1.4.1",
@@ -20,11 +23,11 @@
     "colorette": "^2.0.19",
     "ffmpeg-static": "^5.1.0",
     "fluent-ffmpeg": "^2.1.2",
-    "hyperlinker": "^1.0.0",
     "inquirer": "^8.2.4",
     "inquirer-select-directory": "^1.2.0",
     "sanitize-filename": "^1.6.3",
     "spotify-web-api-node": "^5.0.2",
+    "terminal-link": "^3.0.0",
     "undici": "^5.10.0",
     "youtubei.js": "github:LuanRT/YouTube.js",
     "ytdl-core": "^4.11.2"
@@ -44,6 +47,8 @@
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.0",
+    "pinst": "^3.0.0",
     "prettier": "^2.7.1",
     "typescript": "^4.8.2"
   },

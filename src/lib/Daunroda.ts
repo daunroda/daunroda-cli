@@ -1,11 +1,9 @@
 import { blueBright, cyanBright, greenBright, yellowBright } from "colorette";
 import { EventEmitter } from "node:stream";
+import terminalLink from "terminal-link";
 import { ensureDir } from "./fs-utils";
 import { Spotify } from "./Spotify";
 import { YouTube } from "./YouTube";
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const hyperlinker = require("hyperlinker");
 
 export class Daunroda extends EventEmitter {
   public config: Config;
@@ -53,7 +51,7 @@ export class Daunroda extends EventEmitter {
     this.emit(
       "info",
       `${yellowBright(
-        hyperlinker(
+        terminalLink(
           "Success!",
           "https://www.myinstants.com/media/instants_images/boratgs.jpg"
         )
