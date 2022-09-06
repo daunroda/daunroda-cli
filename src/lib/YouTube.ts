@@ -194,6 +194,7 @@ export class YouTube {
       const { answer }: { answer: boolean } = await inquirer.prompt({
         type: "confirm",
         name: "answer",
+        default: false,
         message: `\nFound ${cyanBright(
           download.name
         )} on YouTube (named ${cyanBright(
