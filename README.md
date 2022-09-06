@@ -31,7 +31,9 @@ bullshit from YouTube (karaoke/instrumental versions, music video versions etc)
 
 - Open a terminal
 - Run `npm install --global daunroda`
-- Run `daunroda`
+- Run `daunroda` (it's recommended to run it on the partition you want to
+  download music to when running for the first time, unless you want to manually
+  edit the config file afterwards)
 
 2. As package:
 

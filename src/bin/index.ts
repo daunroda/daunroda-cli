@@ -3,7 +3,6 @@
 import inquirer from "inquirer";
 import { readFile, stat, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
-import { parse } from "node:path";
 import { Daunroda, type Config } from "../lib/Daunroda";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -92,17 +91,17 @@ class DaunrodaCLI {
     } = await inquirer.prompt([
       {
         name: "spotifyClientID",
-        message: "What is your Spotify client id?"
+        message: "What is your Spotify Client ID?"
       },
       {
         name: "spotifySecret",
-        message: "What is your Spotify client secret?"
+        message: "What is your Spotify Client Secret?"
       },
       {
         name: "downloadTo",
         message: "Where should I download songs to?",
         type: "directory",
-        basePath: parse(__dirname).root
+        basePath: process.cwd()
       },
       {
         name: "audioContainer",
