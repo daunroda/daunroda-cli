@@ -861,7 +861,7 @@ __metadata:
     prettier: ^2.7.1
     sanitize-filename: ^1.6.3
     spotify-web-api-node: ^5.0.2
-    terminal-link: 2.1.1
+    terminal-link: ^2.1.1
     typescript: ^4.8.2
     undici: ^5.10.0
     youtubei.js: ^2.0.0
@@ -2700,7 +2700,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terminal-link@npm:2.1.1":
+"terminal-link@npm:^2.1.1":
   version: 2.1.1
   resolution: "terminal-link@npm:2.1.1"
   dependencies:

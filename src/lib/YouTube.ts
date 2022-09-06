@@ -14,6 +14,7 @@ import ffmpeg from "fluent-ffmpeg";
 import inquirer from "inquirer";
 import { readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
 import type { Readable } from "node:stream";
 import sanitize from "sanitize-filename";
 import terminalLink from "terminal-link";
@@ -75,7 +76,7 @@ export class YouTube {
   public async processSongs(processed: Processed[]) {
     for (const playlist of processed) {
       await ensureDir(
-        `${this.daunroda.config.downloadTo}/${sanitize(playlist.name)}`
+        join(this.daunroda.config.downloadTo, sanitize(playlist.name))
       );
       const promises = [];
 
@@ -101,9 +102,11 @@ export class YouTube {
         const { track } = song;
         const name = `${track.artists[0].name} - ${track.name}`;
 
-        const destination = `${this.daunroda.config.downloadTo}/${sanitize(
-          playlist.name
-        )}/${sanitize(name)}.${this.daunroda.config.audioContainer}`;
+        const destination = join(
+          this.daunroda.config.downloadTo,
+          sanitize(playlist.name),
+          `${sanitize(name)}.${this.daunroda.config.audioContainer}`
+        );
 
         // Skip searching and downloading if song is already downloaded
         if (await exists(destination)) {
@@ -143,15 +146,18 @@ export class YouTube {
       this.stopwatch.stop();
 
       const m3u8 = songs
-        .map(
-          (name) =>
-            `${sanitize(playlist.name)}/${sanitize(name)}.${
-              this.daunroda.config.audioContainer
-            }`
+        .map((name) =>
+          join(
+            sanitize(playlist.name),
+            `${sanitize(name)}.${this.daunroda.config.audioContainer}`
+          )
         )
         .join("\n");
       await writeFile(
-        `${this.daunroda.config.downloadTo}/${sanitize(playlist.name)}.m3u8`,
+        join(
+          this.daunroda.config.downloadTo,
+          `${sanitize(playlist.name)}.m3u8`
+        ),
         m3u8
       );
 
@@ -211,17 +217,19 @@ export class YouTube {
 
         // Add newly downloaded song to playlist file
         let m3u8 = await readFile(
-          `${this.daunroda.config.downloadTo}/${sanitize(
-            download.playlist
-          )}.m3u8`
+          join(
+            this.daunroda.config.downloadTo,
+            `${sanitize(download.playlist)}.m3u8`
+          )
         ).then((buff) => buff.toString());
         m3u8 += `\n${sanitize(download.playlist)}/${sanitize(download.name)}.${
           this.daunroda.config.audioContainer
         }`;
         await writeFile(
-          `${this.daunroda.config.downloadTo}/${sanitize(
-            download.playlist
-          )}.m3u8`,
+          join(
+            this.daunroda.config.downloadTo,
+            `${sanitize(download.playlist)}.m3u8`
+          ),
           m3u8
         );
         progress.stop();
@@ -251,10 +259,13 @@ export class YouTube {
       res.body.arrayBuffer()
     );
 
-    const tmpImg = `${tmpdir()}/${(Math.random() + 1).toString(36)}.jpg`;
-    const tmpAudio = `${tmpdir()}/${(Math.random() + 1).toString(36)}.${
-      this.daunroda.config.audioContainer
-    }`;
+    const tmpImg = join(tmpdir(), `${(Math.random() + 1).toString(36)}.jpg`);
+    const tmpAudio = join(
+      tmpdir(),
+      `${(Math.random() + 1).toString(36)}.${
+        this.daunroda.config.audioContainer
+      }`
+    );
 
     await this.saveTmpAudio(audioStream, tmpAudio);
     await writeFile(tmpImg, Buffer.from(coverStream));

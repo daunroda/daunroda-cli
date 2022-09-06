@@ -20,12 +20,9 @@ export async function exists(path: PathLike): Promise<boolean> {
  * @param path The path to check for existence and create if it doesn't exist.
  */
 export async function ensureDir(path: PathLike): Promise<void> {
-  try {
-    await exists(path);
-  } catch {
+  if (!(await exists(path)))
     await mkdir(path, {
       recursive: true,
       mode: 0o777
     });
-  }
 }

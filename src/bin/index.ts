@@ -8,7 +8,6 @@ import { Daunroda, type Config } from "../lib/Daunroda";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const inquirerdir = require("inquirer-select-directory");
-
 const args = process.argv.slice(2);
 inquirer.registerPrompt("directory", inquirerdir);
 
