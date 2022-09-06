@@ -13,7 +13,7 @@
     "lint": "eslint src --fix --ext ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "postinstall": "husky install",
-    "prepack": "pinst --disable",
+    "prepack": "pinst --disable && yarn lint && yarn format && yarn build",
     "postpack": "pinst --enable"
   },
   "dependencies": {
