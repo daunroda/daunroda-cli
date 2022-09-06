@@ -21,7 +21,7 @@ import terminalLink from "terminal-link";
 import { request } from "undici";
 import { Innertube } from "youtubei.js";
 import type MusicResponsiveListItem from "youtubei.js/dist/src/parser/classes/MusicResponsiveListItem";
-import ytdl from "ytdl-core";
+import ytdl, { getBasicInfo } from "ytdl-core";
 import type { Daunroda } from "./Daunroda";
 import { ensureDir, exists } from "./fs-utils";
 import type { Processed } from "./Spotify";
@@ -119,14 +119,24 @@ export class YouTube {
         this.daunroda.emit("debug", `Searching for "${name}"...`);
         const searched = await this.client.music.search(name, { type: "song" });
 
-        const result =
-          searched?.results?.length &&
-          // Find the first result that doesn't get filtered out
-          (await searched?.results?.find((res) =>
-            this.filter(res, name, destination, track, playlist.name, notFound)
-          ));
+        const result = searched?.results?.length
+          ? // Find the first result that doesn't get filtered out
+            await searched.results.map((res) =>
+              this.filter(
+                res,
+                name,
+                destination,
+                track,
+                playlist.name,
+                notFound
+              )
+            )[0]
+          : null;
 
-        if (!result) continue;
+        if (!result) {
+          this.daunroda.emit("debug", `Not found "${name}"`);
+          continue;
+        }
 
         songs.push(name);
 
@@ -250,8 +260,9 @@ export class YouTube {
     });
 
     audioStream.on("error", (err: { message: string }) =>
-      console.error(
-        `There was an error whilst downloading "${track.name}": ${err.message}`
+      this.daunroda.emit(
+        "error",
+        `There was an error whilst downloading "${track.name}" (YouTube ID: ${id}): ${err.message}`
       )
     );
 
@@ -329,7 +340,7 @@ export class YouTube {
   }
 
   /** Filter out unwanted results */
-  private filter(
+  private async filter(
     res: MusicResponsiveListItem,
     name: string,
     destination: string,
@@ -339,6 +350,13 @@ export class YouTube {
   ) {
     if (!notFound.has(name)) notFound.add(name);
 
+    // Don't download age restricted songs or if you can't fet info on something
+    const info = await getBasicInfo(`https://youtu.be/${res.id}`).catch(
+      () => null
+    );
+
+    if (!info || info.videoDetails.age_restricted) return false;
+
     // If none of the artist names intersect or the titles aren't similar enough then reject this entry
     if (
       !res.artists?.some(
@@ -347,8 +365,7 @@ export class YouTube {
       ) ||
       jaroWinkler(res.title ?? res.name ?? "", track.name) < 0.6
     ) {
-      this.daunroda.emit("debug", `Not found "${name}"`);
-      return false;
+      return null;
     }
 
     const diff = this.difference(
@@ -372,7 +389,7 @@ export class YouTube {
         reason: "the name on YouTube contains forbidden wording"
       });
 
-      return false;
+      return null;
     }
 
     if (
@@ -395,12 +412,12 @@ export class YouTube {
         reason: "a big difference in duration"
       });
 
-      return false;
+      return null;
     }
 
     // Remove the song from the not found set, since it was found by another entry
     if (notFound.has(name)) notFound.delete(name);
-    return true;
+    return res;
   }
 
   private difference(a: number, b: number) {
