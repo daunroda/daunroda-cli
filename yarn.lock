@@ -855,13 +855,13 @@ __metadata:
     ffmpeg-static: ^5.1.0
     fluent-ffmpeg: ^2.1.2
     husky: ^8.0.0
+    hyperlinker: ^1.0.0
     inquirer: ^8.2.4
     inquirer-select-directory: ^1.2.0
     pinst: ^3.0.0
     prettier: ^2.7.1
     sanitize-filename: ^1.6.3
     spotify-web-api-node: ^5.0.2
-    terminal-link: ^2.1.1
     typescript: ^4.8.2
     undici: ^5.10.0
     youtubei.js: ^2.0.0
@@ -1564,6 +1564,13 @@ __metadata:
   bin:
     husky: lib/bin.js
   checksum: 943a73a13d0201318fd30e83d299bb81d866bd245b69e6277804c3b462638dc1921694cb94c2b8c920a4a187060f7d6058d3365152865406352e934c5fff70dc
+  languageName: node
+  linkType: hard
+
+"hyperlinker@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "hyperlinker@npm:1.0.0"
+  checksum: f6d020ac552e9d048668206c805a737262b4c395546c773cceea3bc45252c46b4fa6eeb67c5896499dad00d21cb2f20f89fdd480a4529cfa3d012da2957162f9
   languageName: node
   linkType: hard
 
@@ -2681,32 +2688,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:^7.0.0, supports-color@npm:^7.1.0":
+"supports-color@npm:^7.1.0":
   version: 7.2.0
   resolution: "supports-color@npm:7.2.0"
   dependencies:
     has-flag: ^4.0.0
   checksum: 3dda818de06ebbe5b9653e07842d9479f3555ebc77e9a0280caf5a14fb877ffee9ed57007c3b78f5a6324b8dbeec648d9e97a24e2ed9fdb81ddc69ea07100f4a
-  languageName: node
-  linkType: hard
-
-"supports-hyperlinks@npm:^2.0.0":
-  version: 2.3.0
-  resolution: "supports-hyperlinks@npm:2.3.0"
-  dependencies:
-    has-flag: ^4.0.0
-    supports-color: ^7.0.0
-  checksum: 9ee0de3c8ce919d453511b2b1588a8205bd429d98af94a01df87411391010fe22ca463f268c84b2ce2abad019dfff8452aa02806eeb5c905a8d7ad5c4f4c52b8
-  languageName: node
-  linkType: hard
-
-"terminal-link@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "terminal-link@npm:2.1.1"
-  dependencies:
-    ansi-escapes: ^4.2.1
-    supports-hyperlinks: ^2.0.0
-  checksum: ce3d2cd3a438c4a9453947aa664581519173ea40e77e2534d08c088ee6dda449eabdbe0a76d2a516b8b73c33262fedd10d5270ccf7576ae316e3db170ce6562f
   languageName: node
   linkType: hard
 
