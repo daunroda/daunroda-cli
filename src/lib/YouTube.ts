@@ -374,7 +374,7 @@ export class YouTube {
         (artist) =>
           artist.name.toLowerCase() === track.artists[0].name.toLowerCase()
       ) ||
-      jaroWinkler(res.title ?? res.name ?? "", track.name) < 0.6
+      jaroWinkler(res.title ?? res.name ?? "", track.name) < 0.85
     ) {
       return null;
     }
