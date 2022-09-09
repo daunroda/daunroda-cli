@@ -11,8 +11,6 @@
 The Spotify to YouTube Music downloader that doesn't download all kinds of
 bullshit from YouTube (karaoke/instrumental versions, music video versions etc)
 
-⚠️ This package is still in beta so expect things to break!
-
 ## Features
 
 - Spotify metadata embedded in files
