@@ -267,11 +267,18 @@ export class YouTube {
       )
     );
 
-    const coverStream = await request(track.album.images[0].url).then((res) =>
-      res.body.arrayBuffer()
-    );
+    const coverUrl = track.album.images[0]?.url;
+    let tmpImg: string | null = null;
 
-    const tmpImg = join(tmpdir(), `${(Math.random() + 1).toString(36)}.jpg`);
+    if (coverUrl) {
+      const coverStream = await request(coverUrl).then((res) =>
+        res.body.arrayBuffer()
+      );
+
+      tmpImg = join(tmpdir(), `${(Math.random() + 1).toString(36)}.jpg`);
+      await writeFile(tmpImg, Buffer.from(coverStream));
+    }
+
     const tmpAudio = join(
       tmpdir(),
       `${(Math.random() + 1).toString(36)}.${
@@ -280,46 +287,46 @@ export class YouTube {
     );
 
     await this.saveTmpAudio(audioStream, tmpAudio);
-    await writeFile(tmpImg, Buffer.from(coverStream));
 
     return new Promise<void>((resolve, reject) => {
       try {
-        const ff = ffmpeg(tmpAudio)
-          .input(tmpImg)
-          .outputOptions(
-            "-acodec",
-            this.codec,
-            "-b:a",
-            this.bitrate,
+        const ff = ffmpeg(tmpAudio).outputOptions(
+          "-acodec",
+          this.codec,
+          "-b:a",
+          this.bitrate,
+          "-id3v2_version",
+          "3",
+          "-metadata",
+          `album=${track.album.name}`,
+          "-metadata",
+          `title=${track.name}`,
+          "-metadata",
+          `artist=${track.artists.map((artist) => artist.name).join(", ")}`,
+          "-metadata",
+          `album_artist=${track.album.artists
+            .map((artist) => artist.name)
+            .join(", ")}`
+        );
+        if (tmpImg)
+          ff.input(tmpImg).outputOptions(
             "-map",
             "0:0",
             "-map",
             "1:0",
-            "-id3v2_version",
-            "3",
             "-disposition:v",
             "attached_pic",
             "-metadata:s:v",
             'title="Album cover"',
             "-metadata:s:v",
-            'comment="Cover (Front)"',
-            "-metadata",
-            `album=${track.album.name}`,
-            "-metadata",
-            `title=${track.name}`,
-            "-metadata",
-            `artist=${track.artists.map((artist) => artist.name).join(", ")}`,
-            "-metadata",
-            `album_artist=${track.album.artists
-              .map((artist) => artist.name)
-              .join(", ")}`
+            'comment="Cover (Front)"'
           );
 
         ff.saveToFile(destination);
 
         ff.on("error", reject);
         ff.on("end", async () => {
-          await rm(tmpImg);
+          if (tmpImg) await rm(tmpImg);
           await rm(tmpAudio);
           progress.increment();
           resolve();
