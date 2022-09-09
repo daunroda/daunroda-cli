@@ -191,6 +191,7 @@ export class YouTube {
     }
 
     for (const download of this.downloadMaybe) {
+      if (await exists(download.destination)) continue;
       const { answer }: { answer: boolean } = await inquirer.prompt({
         type: "confirm",
         name: "answer",
@@ -417,7 +418,11 @@ export class YouTube {
         destination,
         track,
         playlist,
-        reason: "a big difference in duration"
+        reason: `a big difference in duration (${diff}%, threshold is ${
+          isNaN(this.daunroda.config.difference)
+            ? 10
+            : this.daunroda.config.difference
+        }%)`
       });
 
       return null;
