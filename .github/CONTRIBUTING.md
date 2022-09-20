@@ -18,5 +18,5 @@ do not fail.
 **_Before committing and pushing your changes, please ensure that you do not
 have any linting errors by running `yarn lint`!_**
 
-[here]: https://github.com/alexthemaster/daunroda/pulls
+[here]: https://github.com/daunroda/daunroda/pulls
 [eslint]: https://eslint.org/
