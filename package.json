@@ -58,7 +58,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/daunroda/daunroda.git"
+    "url": "git+https://github.com/daunroda/daunroda-cli.git"
   },
   "keywords": [
     "spotify",
@@ -67,9 +67,9 @@
     "youtube-music-downloader"
   ],
   "bugs": {
-    "url": "https://github.com/daunroda/daunroda/issues"
+    "url": "https://github.com/daunroda/daunroda-cli/issues"
   },
-  "homepage": "https://github.com/daunroda/daunroda#readme",
+  "homepage": "https://github.com/daunroda/daunroda-cli#readme",
   "eslintConfig": {
     "extends": "@sapphire"
   },
